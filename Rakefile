@@ -5,12 +5,12 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "pcaprub"
-    gem.summary = %Q{libpcap bindings for ruby}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = "libpcap bindings for ruby"
+    gem.description = "libpcap bindings for ruby"
     gem.email = "shadowbq@gmail.com"
     gem.homepage = "http://github.com/shadowbq/pcaprub"
     gem.authors = ["shadowbq"]
-    gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
+    gem.extensions = ["lib/extconf.rb"]
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
