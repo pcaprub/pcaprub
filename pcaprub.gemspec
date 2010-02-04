@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{pcaprub}
-  s.version = "0.6.0"
+  s.version = "0.6.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["shadowbq"]
@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
      "lib/pcaprub.c",
      "lib/pcaprub.rb",
      "mkmf.log",
+     "pcaprub.gemspec",
      "test/helper.rb",
      "test/test_pcaprub.rb"
   ]
