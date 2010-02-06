@@ -1,5 +1,1 @@
-require File.dirname(__FILE__) + "/extconf.rb"
-
-module Pcaprub
-  VERSION="0.6.1"
-end
+require File.expand_path(File.dirname(__FILE__)) + "/pcaprub.so"

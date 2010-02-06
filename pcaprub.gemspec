@@ -9,10 +9,10 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["shadowbq"]
-  s.date = %q{2010-02-04}
+  s.date = %q{2010-02-06}
   s.description = %q{libpcap bindings for ruby}
   s.email = %q{shadowbq@gmail.com}
-  s.extensions = ["lib/extconf.rb"]
+  s.extensions = ["ext/pcaprub/extconf.rb"]
   s.extra_rdoc_files = [
     "LICENSE",
      "README.rdoc"
@@ -25,8 +25,6 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "VERSION",
-     "lib/extconf.rb",
-     "lib/pcaprub.c",
      "lib/pcaprub.rb",
      "mkmf.log",
      "pcaprub.gemspec",
@@ -36,11 +34,13 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/shadowbq/pcaprub}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
+  s.rubyforge_project = %q{pcaprub}
   s.rubygems_version = %q{1.3.5}
   s.summary = %q{libpcap bindings for ruby}
   s.test_files = [
     "test/helper.rb",
-     "test/test_pcaprub.rb"
+     "test/test_pcaprub.rb",
+     "test/test_pcaprub_unit.rb"
   ]
 
   if s.respond_to? :specification_version then
