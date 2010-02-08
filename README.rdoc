@@ -10,7 +10,25 @@ PacketRub project (http://packetrub.rubyforge.org).
 Requirements:
   libpcap - http://www.tcpdump.org
 
-== Other Repositories
+== Installation  
+
+  gem install pcaprub  
+
+
+== Usage
+
+ require 'rubygems'
+ require 'pcaprub'
+ 
+ cap = Pcap.new
+
+== Current Repository for Gemcutter source
+
+The Git Repo on Github @shadowbq is forked from the Metasploit SVN repo
+  git clone git://github.com/shadowbq/pcaprub.git
+
+    
+=== Notes on other repositories
 
 The latest community svn version can be obtained from Subversion:
   svn checkout http://pcaprub.rubyforge.org/svn/trunk/
@@ -19,8 +37,4 @@ The Metasploit Project also provides a Subversion repository:
   svn checkout http://metasploit.com/svn/framework3/trunk/external/pcaprub/
 
 (credits: github.com/dxoigmn/pcaprub)
-
-== Current Repository for Gemcutter source
-
-The Git Repo on Github @shadowbq is forked from the Metasploit SVN repo
-  git clone git://github.com/shadowbq/pcaprub.git
+  
