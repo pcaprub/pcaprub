@@ -16,6 +16,7 @@ end
 
 CLEAN.include 'ext/**/Makefile'
 CLEAN.include 'ext/**/*.o'
+CLEAN.include 'ext/**/mkmf.log'
 CLEAN.include 'ext/**/*.so'
 CLEAN.include 'lib/**/*.so'
 
