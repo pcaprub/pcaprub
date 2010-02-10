@@ -1,11 +1,11 @@
 = pcaprub
 
-This goal of this project is to provide a consistent interface to LBL's libpcap
-packet capture library. This project was created because the currently
-available ruby-pcap library is poorly designed and has been unmaintained since
-2000. This does not provide packet processing functionality, it simply provides
-the interface for capturing packets. For packet processing capability, see the
-PacketRub project (http://packetrub.rubyforge.org).
+This goal of this project is to provide a consistent interface 
+to LBL's libpcap packet capture library. This project was created 
+because the currently available ruby-pcap library is poorly designed 
+and has been unmaintained since 2000. This does not provide packet 
+processing functionality, it simply provides the interface for 
+capturing packets. For packet processing capability.
 
 Requirements:
   libpcap - http://www.tcpdump.org
@@ -30,11 +30,17 @@ The Git Repo on Github @shadowbq is forked from the Metasploit SVN repo
     
 === Notes on other repositories
 
-The latest community svn version can be obtained from Subversion:
-  svn checkout http://pcaprub.rubyforge.org/svn/trunk/
-
-The Metasploit Project also provides a Subversion repository:
+The Metasploit Project also provides a Subversion repository: (0.9-dev)
   svn checkout http://metasploit.com/svn/framework3/trunk/external/pcaprub/
 
-(credits: github.com/dxoigmn/pcaprub)
+Packetfu Project also provides a listing (0.9-dev) 
+  http://code.google.com/p/packetfu/source/browse/#svn/trunk/pcaprub_linux
+  
+The Outdate RubyForge svn version can be obtained from Subversion: (0.7-dev)
+  svn checkout http://pcaprub.rubyforge.org/svn/trunk/
+  http download Public Rubyforge (0.6)
+  
+Additonal Github Repos
+  github.com/dxoigmn/pcaprub (0.8-dev)
+  github.com/spox /pcaprub-spox  (0.8-dev+)
   

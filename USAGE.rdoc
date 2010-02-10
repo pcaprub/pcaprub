@@ -1,0 +1,82 @@
+= Usage of Pcaprub
+
+Pcaprub is a ruby wrapper to the libpcap libary. It provides a common method to access the c bindings defined in libpcap. 
+ 
+== Basics of Pcaprub  
+
+  require "rubygems"
+  require "pcaprub"
+
+  mypcap = Pcap.new  
+
+
+== Setting up a live Capture
+
+  dev = ::Pcap.lookupdev
+
+  snaplength = 65535
+  promiscous_mode = true 
+  timeout = 0 
+  
+  system("ifconfig", dev, "up")
+  
+  capture = ::Pcap.open_live(dev, snaplength, promiscous_mode, timeout)  
+  
+== Open an existing pcap file
+  
+  pcapfile = File.dirname(__FILE__) + "/foo.pcap"
+  
+  if(not File.exists?(pcapfile))
+    raise RuntimeError, "The PCAP file #{pcapfile} could not be found"
+  end
+  
+  capture = ::Pcap.open_offline(pcapfile)
+  
+== Setting a BPF Filter
+  
+  bpf = "ip and not net 10.0.0.0/8"
+  
+  capture.setfilter(bpf)
+
+== Reading Capture Statistics
+
+Packets Received 
+  capture.stats['recv']
+
+Packets Dropped  
+	capture.stats['drop']
+
+Packets Dropped by Interface
+	capture.stats['ifdrop']
+
+== Running the Capture
+
+Sniffing a set number of packets and also letting the user Interrupt Early
+
+  capture_packets = 100
+  
+  begin
+    capture.each do |packet|
+      p packet 
+      # Handling the number of packets to process
+      capture_packets -= 1
+      if capture_packets == 0
+        break
+      end
+    end
+    
+  # ^C to stop sniffing
+  rescue Interrupt
+    puts "\nPacket Capture stopped by interrupt signal."
+    
+  rescue Exception => e
+    puts "\nERROR: #{e}"
+    retry
+  end
+	
+== Examming the DataLink
+
+Ethernet or Linux loopback
+  if capture.datalink == Pcap::DLT_EN10MB
+    puts "Ethernet 10MB Link detected"
+  end

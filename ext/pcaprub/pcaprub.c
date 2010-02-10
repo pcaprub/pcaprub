@@ -35,13 +35,20 @@ typedef struct rbpcapjob {
 	int wtf;
 } rbpcapjob_t;
 
+/*
+* returns the version of Pcaprub extension
+*/
 static VALUE
 rbpcap_s_version(VALUE class)
 {
     return rb_str_new2(PCAPRUB_VERSION);	
 }
 
-
+/*
+* Return the name of a network device on the system.
+*
+* The pcap_lookupdev subroutine gets a network device suitable for use with the pcap_open_live and the pcap_lookupnet subroutines. If no interface can be found, or none are configured to be up, Null is returned. In the case of multiple network devices attached to the system, the pcap_lookupdev subroutine returns the first one it finds to be up, other than the loopback interface. (Loopback is always ignored.)
+*/
 static VALUE
 rbpcap_s_lookupdev(VALUE self)
 {
@@ -81,6 +88,9 @@ rbpcap_s_lookupdev(VALUE self)
     return ret_dev;
 }
 
+/*
+* Returns the network address and subnet mask for a network device.
+*/
 static VALUE
 rbpcap_s_lookupnet(VALUE self, VALUE dev)
 {
@@ -122,7 +132,9 @@ static void rbpcap_free(rbpcap_t *rbp) {
 	rbp->pdt = NULL;
 	free(rbp);
 }
-
+/*
+* Creates a new Pcap instance and returns the object itself.
+*/
 static VALUE
 rbpcap_new_s(VALUE class)
 {
@@ -138,6 +150,22 @@ rbpcap_new_s(VALUE class)
     return self;
 }
 
+/*
+* call-seq:
+*   setfilter(filter)
+*
+* Provide a valid bpf-filter to apply to the packet capture
+* 
+*  # Show me all SYN packets:
+*  bpf-filter = "tcp[13] & 2 != 0"
+*  capture.setfilter(bpf-filter)
+* 
+* Examples:
+* * "net 10.0.0.0/8"
+* * "not tcp and dst host 192.168.1.1"
+*
+* Returns the object itself.
+*/
 static VALUE
 rbpcap_setfilter(VALUE self, VALUE filter)
 {
@@ -166,7 +194,7 @@ rbpcap_setfilter(VALUE self, VALUE filter)
     return self;
 }
 
-
+// transparent method
 static VALUE
 rbpcap_open_live(VALUE self, VALUE iface,VALUE snaplen,VALUE promisc, VALUE timeout)
 {
@@ -218,6 +246,15 @@ rbpcap_open_live(VALUE self, VALUE iface,VALUE snaplen,VALUE promisc, VALUE time
     return self;
 }
 
+/*
+* 
+* call-seq:
+*   open_live(iface, snaplen, promisc, timeout) -> self
+*
+*   capture = ::Pcap.open_live(@dev, @snaplength, @promiscous_mode, @timeout)
+*
+* Returns the object itself.  
+*/
 static VALUE
 rbpcap_open_live_s(VALUE class, VALUE iface, VALUE snaplen, VALUE promisc, VALUE timeout)
 {
@@ -225,6 +262,7 @@ rbpcap_open_live_s(VALUE class, VALUE iface, VALUE snaplen, VALUE promisc, VALUE
     return rbpcap_open_live(iPcap, iface, snaplen, promisc, timeout);
 }
 
+// transparent method
 static VALUE
 rbpcap_open_offline(VALUE self, VALUE filename)
 {
@@ -250,7 +288,15 @@ rbpcap_open_offline(VALUE self, VALUE filename)
     return self;
 }
 
-
+/*
+* 
+* call-seq:
+*   open_offline(filename) -> self
+*
+*   capture = ::Pcap.open_offline(filename)  
+*
+* Returns the object itself.
+*/
 static VALUE
 rbpcap_open_offline_s(VALUE class, VALUE filename)
 {
@@ -259,6 +305,7 @@ rbpcap_open_offline_s(VALUE class, VALUE filename)
     return rbpcap_open_offline(iPcap, filename);
 }
 
+// transparent method 
 static VALUE
 rbpcap_open_dead(VALUE self, VALUE linktype, VALUE snaplen)
 {
@@ -283,6 +330,22 @@ rbpcap_open_dead(VALUE self, VALUE linktype, VALUE snaplen)
     return self;
 }
 
+/*
+* 
+* call-seq:
+*   open_dead(linktype, snaplen) -> self
+*
+* open a fake Pcap for compiling filters or opening a capture for output
+*
+* ::Pcap.open_dead() is used for creating a pcap structure to use when
+* calling the other functions like compiling BPF code.
+*
+* * linktype specifies the link-layer type
+*
+* * snaplen specifies the snapshot length
+*
+* Returns the object itself.
+*/
 static VALUE
 rbpcap_open_dead_s(VALUE class, VALUE linktype, VALUE snaplen)
 {
@@ -291,7 +354,12 @@ rbpcap_open_dead_s(VALUE class, VALUE linktype, VALUE snaplen)
     return rbpcap_open_dead(iPcap, linktype, snaplen);
 }
 
-
+/*
+* call-seq:
+*   dump_open(filename)
+*
+*  dump_open() is called to open a "savefile" for  writing
+*/
 static VALUE
 rbpcap_dump_open(VALUE self, VALUE filename)
 {
@@ -309,7 +377,17 @@ rbpcap_dump_open(VALUE self, VALUE filename)
     return self;
 }
 
-//not sure if this deviates too much from the way the rest of this class works?
+
+/*
+* call-seq:
+*   dump(caplen, pktlen, packet)
+*
+* not sure if this deviates too much from the way the rest of this class works?
+*
+* Writes packet capture date to a binary file assigned with dump_open().
+*
+* Returns the object itself.
+*/
 static VALUE
 rbpcap_dump(VALUE self, VALUE caplen, VALUE pktlen, VALUE packet)
 {
@@ -338,6 +416,14 @@ rbpcap_dump(VALUE self, VALUE caplen, VALUE pktlen, VALUE packet)
     return self;
 }
 
+/*
+* call-seq:
+*   inject(payload)
+*
+* inject() transmit a raw packet through the network interface  
+* 
+* Returns the number of bytes written on success else raise failure.
+*/
 static VALUE
 rbpcap_inject(VALUE self, VALUE payload)
 {
@@ -368,6 +454,12 @@ static void rbpcap_handler(rbpcapjob_t *job, struct pcap_pkthdr *hdr, u_char *pk
 	job->hdr = *hdr;
 }
 
+/*
+*
+* Returns the next packet from the packet capture device.
+*
+* If the next() is unsuccessful, Null is returned.
+*/
 static VALUE
 rbpcap_next(VALUE self)
 {
@@ -396,6 +488,13 @@ rbpcap_next(VALUE self)
 	return Qnil;
 }
 
+/*
+* call-seq:
+*   each() { |packet| ... } 
+*
+* Yields each packet from the capture to the passed-in block in turn.
+*
+*/
 static VALUE
 rbpcap_capture(VALUE self)
 {
@@ -417,7 +516,14 @@ rbpcap_capture(VALUE self)
     return self;
 }
 
-
+/*
+* call-seq:
+*   datalink()
+*
+* Returns the integer datalink value unless capture 
+* 
+*   foo.bar unless capture.datalink == Pcap::DLT_EN10MB
+*/
 static VALUE
 rbpcap_datalink(VALUE self)
 {
@@ -430,6 +536,13 @@ rbpcap_datalink(VALUE self)
     return INT2NUM(pcap_datalink(rbp->pd));
 }
 
+/*
+* call-seq:
+*   snapshot()
+*
+* Returns the snapshot length, which is the number of bytes to save for each packet captured.
+* 
+*/
 static VALUE
 rbpcap_snapshot(VALUE self)
 {
@@ -442,7 +555,16 @@ rbpcap_snapshot(VALUE self)
     return INT2NUM(pcap_snapshot(rbp->pd));
 }
 
-//returns a hash
+/*
+* call-seq:
+*   stats()
+*
+* Returns a hash with statistics of the packet capture
+*
+* - ["recv"] # number of packets received
+* - ["drop"] # number of packets dropped 
+* 
+*/
 static VALUE
 rbpcap_stats(VALUE self)
 {
@@ -460,7 +582,8 @@ rbpcap_stats(VALUE self)
     hash = rb_hash_new();
     rb_hash_aset(hash, rb_str_new2("recv"), UINT2NUM(stat.ps_recv));
     rb_hash_aset(hash, rb_str_new2("drop"), UINT2NUM(stat.ps_drop));
-    rb_hash_aset(hash, rb_str_new2("idrop"), UINT2NUM(stat.ps_ifdrop));
+    // drops by interface XXX not yet supported under pcap.h 2.4
+    // rb_hash_aset(hash, rb_str_new2("idrop"), UINT2NUM(stat.ps_ifdrop));
     return hash;
 }
 
@@ -474,20 +597,9 @@ Init_pcaprub()
     */
     rb_cPcap = rb_define_class("Pcap", rb_cObject);
     
-    /*
-    * Document-module-function: Version 
-    * return the version of Pcaprub extension
-    */
     rb_define_module_function(rb_cPcap, "version", rbpcap_s_version, 0);
     
-    /*
-    * return the device id
-    */
-    rb_define_module_function(rb_cPcap, "lookupdev", rbpcap_s_lookupdev, 0);
-    
-    /*
-    * return the net
-    */
+    rb_define_module_function(rb_cPcap, "lookupdev", rbpcap_s_lookupdev, 0);  
     rb_define_module_function(rb_cPcap, "lookupnet", rbpcap_s_lookupnet, 1);
 		
     rb_define_const(rb_cPcap, "DLT_NULL",   INT2NUM(DLT_NULL));
@@ -520,48 +632,18 @@ Init_pcaprub()
     rb_define_singleton_method(rb_cPcap, "dump_open", rbpcap_dump_open, 1);
 	  
     
-    /*
-    * Document-method: dump
-    */
     rb_define_method(rb_cPcap, "dump", rbpcap_dump, 3);
-    
-    /*
-    * Document-method: each
-    */
     rb_define_method(rb_cPcap, "each", rbpcap_capture, 0);
-    
-    /*
-    * Document-method: next
-    */
     rb_define_method(rb_cPcap, "next", rbpcap_next, 0);
-    
-    /*
-    * Document-method: setfilter
-    */
     rb_define_method(rb_cPcap, "setfilter", rbpcap_setfilter, 1);
-    
-    /*
-    * Document-method: inject
-    */
     rb_define_method(rb_cPcap, "inject", rbpcap_inject, 1);
-    
-    /*
-    * Document-method: datalink
-    */
     rb_define_method(rb_cPcap, "datalink", rbpcap_datalink, 0);
-    
-    /*
-    * Document-method: snapshot
-    */
     rb_define_method(rb_cPcap, "snapshot", rbpcap_snapshot, 0);
     
     /*
     * Document-method: snaplen
+    * Alias of snapshot
     */
     rb_define_method(rb_cPcap, "snaplen", rbpcap_snapshot, 0);
-    
-    /*
-    * Document-method: stats
-    */
     rb_define_method(rb_cPcap, "stats", rbpcap_stats, 0);
 }
