@@ -5,17 +5,20 @@
 
 Gem::Specification.new do |s|
   s.name = %q{pcaprub}
-  s.version = "0.9.1"
+  s.version = "0.9.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["shadowbq"]
-  s.date = %q{2010-02-09}
+  s.date = %q{2010-02-10}
   s.description = %q{libpcap bindings for ruby}
   s.email = %q{shadowbq@gmail.com}
   s.extensions = ["ext/pcaprub/extconf.rb"]
   s.extra_rdoc_files = [
-    "LICENSE",
-     "README.rdoc"
+    "FAQ.rdoc",
+     "LICENSE",
+     "README.rdoc",
+     "USAGE.rdoc",
+     "ext/pcaprub/pcaprub.c"
   ]
   s.files = [
     ".document",
