@@ -1,6 +1,10 @@
 = Usage of Pcaprub
 
 Pcaprub is a ruby wrapper to the libpcap libary. It provides a common method to access the c bindings defined in libpcap. 
+
+Many of the methods require the Pcap instance to be "ready". 
+
+ - "Ready" is defined as being initiated with open_live open_dead or open_offline.
  
 == Basics of Pcaprub  
 
@@ -74,7 +78,7 @@ Sniffing a set number of packets and also letting the user Interrupt Early
     retry
   end
 	
-== Examming the DataLink
+== Examining the DataLink
 
 Ethernet or Linux loopback
   if capture.datalink == Pcap::DLT_EN10MB
