@@ -32,6 +32,7 @@ begin
     gem.extensions = FileList['ext/**/extconf.rb']
     gem.rubyforge_project   = 'pcaprub'
     gem.files.include('lib/pcaprub.*') # add native stuff
+    gem.extra_rdoc_files = FileList['README*', 'ChangeLog*', 'LICENSE*', 'FAQ*', 'USAGE*', 'ext/**/*.c']
   end
   
   $gemspec          = jeweler_tasks.gemspec
