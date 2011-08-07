@@ -1,6 +1,6 @@
 #include "ruby.h"
 
-#ifndef RUBY_19
+#ifdef RUBY_18
 #include "rubysig.h"
 #endif
 
@@ -472,11 +472,11 @@ rbpcap_next(VALUE self)
 	if(! rbpcap_ready(rbp)) return self; 
 	pcap_setnonblock(rbp->pd, 1, eb);
 
-#ifndef RUBY_19
+#ifdef RUBY_18
 	TRAP_BEG;
 #endif
 	ret = pcap_dispatch(rbp->pd, 1, (pcap_handler) rbpcap_handler, (u_char *)&job);
-#ifndef RUBY_19
+#ifdef RUBY_18
 	TRAP_END;
 #endif
 
