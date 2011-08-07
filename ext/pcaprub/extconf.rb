@@ -15,7 +15,7 @@ else
 	have_library("pcap", "pcap_setnonblock")
 end
 
-if ( RUBY_VERSION =~ /^1\.8/ and RUBY_PLATFORM != 'java' )
+if ( RUBY_VERSION =~ /^1\.8/ && !defined?(JRUBY_VERSION) )
 	$CFLAGS += " -DMAKE_TRAP"
 end
 
