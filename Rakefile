@@ -25,7 +25,7 @@ begin
   jeweler_tasks = Jeweler::Tasks.new do |gem|
     gem.name = "pcaprub"
     gem.summary = "libpcap bindings for ruby"
-    gem.description = "libpcap bindings for ruby"
+    gem.description = "libpcap bindings for ruby compat with JRUBY Ruby1.8 Ruby1.9"
     gem.email = "shadowbq@gmail.com"
     gem.homepage = "http://github.com/shadowbq/pcaprub"
     gem.authors = ["shadowbq"]
