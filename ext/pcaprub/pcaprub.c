@@ -545,18 +545,12 @@ rbpcap_datalink(VALUE self)
 * call-seq:
 *   pcap_major_version()
 *
-* Returns the integer PCAP MAJOR LIBRARY value unless capture 
+* Returns the integer PCAP MAJOR LIBRARY 
 * 
 */
 static VALUE
-rbpcap_major_version(VALUE self)
+rbpcap_major_version(VALUE class)
 {
-    rbpcap_t *rbp;
-
-    Data_Get_Struct(self, rbpcap_t, rbp);
-	
-	if(! rbpcap_ready(rbp)) return self;
-	
     return INT2NUM(pcap_major_version(rbp->pd));
 }
 
@@ -564,17 +558,12 @@ rbpcap_major_version(VALUE self)
 * call-seq:
 *   pcap_minor_version()
 *
-* Returns the integer PCAP MINOR LIBRARY value unless capture 
+* Returns the integer PCAP MINOR LIBRARY  
 * 
 */
 static VALUE
-rbpcap_minor_version(VALUE self)
+rbpcap_minor_version(VALUE class)
 {
-    rbpcap_t *rbp;
-
-    Data_Get_Struct(self, rbpcap_t, rbp);
-	
-	if(! rbpcap_ready(rbp)) return self;
 	
     return INT2NUM(pcap_minor_version(rbp->pd));
 }
@@ -698,9 +687,7 @@ Init_pcaprub()
     rb_define_method(rb_cPcap, "snaplen", rbpcap_snapshot, 0);
     rb_define_method(rb_cPcap, "stats", rbpcap_stats, 0);
     
-    /* Pcap Error Codes */
-    rb_define_const(rb_cPcap, "DLT_AIRONET_HEADER", INT2NUM(DLT_AIRONET_HEADER));
-    /*
+    /* Pcap Error Codes 
      * Error codes for the pcap API.
      * These will all be negative, so you can check for the success or
      * failure of a call that returns these codes by checking for a
