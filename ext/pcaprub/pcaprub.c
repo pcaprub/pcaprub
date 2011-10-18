@@ -710,11 +710,11 @@ Init_pcaprub()
     rb_define_const(rb_cPcap, "PCAP_ERROR_BREAK", INT2NUM(PCAP_ERROR_BREAK)); /* loop terminated by pcap_breakloop */
     rb_define_const(rb_cPcap, "PCAP_ERROR_NOT_ACTIVATED", INT2NUM(PCAP_ERROR_NOT_ACTIVATED));	/* the capture needs to be activated */
     rb_define_const(rb_cPcap, "PCAP_ERROR_ACTIVATED", INT2NUM(PCAP_ERROR_ACTIVATED));	/* the operation can't be performed on already activated captures */
-    rb_define_const(rb_cPcap, "PCAP_ERROR_NO_SUCH_DEVICE", INT2NUM(PCAP_ERROR_NO_SUCH_DEVIC));	/* no such device exists */
+    rb_define_const(rb_cPcap, "PCAP_ERROR_NO_SUCH_DEVICE", INT2NUM(PCAP_ERROR_NO_SUCH_DEVICE));	/* no such device exists */
     rb_define_const(rb_cPcap, "PCAP_ERROR_RFMON_NOTSUP", INT2NUM(PCAP_ERROR_RFMON_NOTSUP));	/* this device doesn't support rfmon (monitor) mode */
     rb_define_const(rb_cPcap, "PCAP_ERROR_NOT_RFMON", INT2NUM(PCAP_ERROR_NOT_RFMON));	/* operation supported only in monitor mode */
     rb_define_const(rb_cPcap, "PCAP_ERROR_PERM_DENIED", INT2NUM(PCAP_ERROR_PERM_DENIED));	/* no permission to open the device */
-    rb_define_const(rb_cPcap, "PCAP_ERROR_IFACE_NOT_UP", INT2NUM(PCAP_ERROR_IFACE_NOT_U));	/* interface isn't up */
+    rb_define_const(rb_cPcap, "PCAP_ERROR_IFACE_NOT_UP", INT2NUM(PCAP_ERROR_IFACE_NOT_UP));	/* interface isn't up */
 
     /*
      * Warning codes for the pcap API.
