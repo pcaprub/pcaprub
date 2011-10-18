@@ -545,12 +545,18 @@ rbpcap_datalink(VALUE self)
 * call-seq:
 *   pcap_major_version()
 *
-* Returns the integer PCAP MAJOR LIBRARY 
+* Returns the integer PCAP MAJOR LIBRARY value unless capture 
 * 
 */
 static VALUE
-rbpcap_major_version(VALUE class)
+rbpcap_major_version(VALUE self)
 {
+    rbpcap_t *rbp;
+
+    Data_Get_Struct(self, rbpcap_t, rbp);
+	
+	if(! rbpcap_ready(rbp)) return self;
+	
     return INT2NUM(pcap_major_version(rbp->pd));
 }
 
@@ -558,12 +564,17 @@ rbpcap_major_version(VALUE class)
 * call-seq:
 *   pcap_minor_version()
 *
-* Returns the integer PCAP MINOR LIBRARY  
+* Returns the integer PCAP MINOR LIBRARY value unless capture 
 * 
 */
 static VALUE
-rbpcap_minor_version(VALUE class)
+rbpcap_minor_version(VALUE self)
 {
+    rbpcap_t *rbp;
+
+    Data_Get_Struct(self, rbpcap_t, rbp);
+	
+	if(! rbpcap_ready(rbp)) return self;
 	
     return INT2NUM(pcap_minor_version(rbp->pd));
 }
@@ -635,8 +646,7 @@ Init_pcaprub()
     rb_cPcap = rb_define_class("Pcap", rb_cObject);
     
     rb_define_module_function(rb_cPcap, "version", rbpcap_s_version, 0);
-    rb_define_module_function(rb_cPcap, "pcap_major_version", rbpcap_major_version, 0);
-    rb_define_module_function(rb_cPcap, "pcap_minor_version", rbpcap_minor_version, 0);
+
     
     
     rb_define_module_function(rb_cPcap, "lookupdev", rbpcap_s_lookupdev, 0);  
@@ -679,6 +689,8 @@ Init_pcaprub()
     rb_define_method(rb_cPcap, "inject", rbpcap_inject, 1);
     rb_define_method(rb_cPcap, "datalink", rbpcap_datalink, 0);
     rb_define_method(rb_cPcap, "snapshot", rbpcap_snapshot, 0);
+    rb_define_method(rb_cPcap, "pcap_major_version", rbpcap_major_version, 0);
+    rb_define_method(rb_cPcap, "pcap_minor_version", rbpcap_minor_version, 0);
     
     /*
     * Document-method: snaplen
