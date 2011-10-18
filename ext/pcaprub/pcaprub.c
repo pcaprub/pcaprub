@@ -45,44 +45,6 @@ rbpcap_s_version(VALUE class)
 }
 
 /*
-* call-seq:
-*   datalink()
-*
-* Returns the integer PCAP LIBRARY value unless capture 
-* 
-*   foo.bar unless capture.datalink == Pcap::DLT_EN10MB
-*/
-
-//int	pcap_datalink(pcap_t *);
-//int	pcap_major_version(pcap_t *);
-//int	pcap_minor_version(pcap_t *);
-
-static VALUE
-rbpcap_major_version(VALUE self)
-{
-    rbpcap_t *rbp;
-
-    Data_Get_Struct(self, rbpcap_t, rbp);
-	
-	if(! rbpcap_ready(rbp)) return self;
-	
-    return INT2NUM(pcap_major_version(rbp->pd));
-}
-
-
-static VALUE
-rbpcap_minor_version(VALUE self)
-{
-    rbpcap_t *rbp;
-
-    Data_Get_Struct(self, rbpcap_t, rbp);
-	
-	if(! rbpcap_ready(rbp)) return self;
-	
-    return INT2NUM(pcap_minor_version(rbp->pd));
-}
-
-/*
 * Return the name of a network device on the system.
 *
 * The pcap_lookupdev subroutine gets a network device suitable for use with the pcap_open_live and the pcap_lookupnet subroutines. If no interface can be found, or none are configured to be up, Null is returned. In the case of multiple network devices attached to the system, the pcap_lookupdev subroutine returns the first one it finds to be up, other than the loopback interface. (Loopback is always ignored.)
@@ -579,7 +541,43 @@ rbpcap_datalink(VALUE self)
     return INT2NUM(pcap_datalink(rbp->pd));
 }
 
+/*
+* call-seq:
+*   pcap_major_version()
+*
+* Returns the integer PCAP MAJOR LIBRARY value unless capture 
+* 
+*/
+static VALUE
+rbpcap_major_version(VALUE self)
+{
+    rbpcap_t *rbp;
 
+    Data_Get_Struct(self, rbpcap_t, rbp);
+	
+	if(! rbpcap_ready(rbp)) return self;
+	
+    return INT2NUM(pcap_major_version(rbp->pd));
+}
+
+/*
+* call-seq:
+*   pcap_minor_version()
+*
+* Returns the integer PCAP MINOR LIBRARY value unless capture 
+* 
+*/
+static VALUE
+rbpcap_minor_version(VALUE self)
+{
+    rbpcap_t *rbp;
+
+    Data_Get_Struct(self, rbpcap_t, rbp);
+	
+	if(! rbpcap_ready(rbp)) return self;
+	
+    return INT2NUM(pcap_minor_version(rbp->pd));
+}
 
 /*
 * call-seq:
