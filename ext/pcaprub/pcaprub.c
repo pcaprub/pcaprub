@@ -10,13 +10,13 @@
 #if !defined(WIN32)
  #include <netinet/in.h>
  #include <arpa/inet.h>
+ #include <sys/time.h>
 #endif
 
-#include <sys/time.h>
 
 static VALUE rb_cPcap;
 
-#define PCAPRUB_VERSION "0.9-dev"
+#define PCAPRUB_VERSION "0.10-dev"
 
 #define OFFLINE 1
 #define LIVE 2
@@ -42,6 +42,44 @@ static VALUE
 rbpcap_s_version(VALUE class)
 {
     return rb_str_new2(PCAPRUB_VERSION);	
+}
+
+/*
+* call-seq:
+*   datalink()
+*
+* Returns the integer PCAP LIBRARY value unless capture 
+* 
+*   foo.bar unless capture.datalink == Pcap::DLT_EN10MB
+*/
+
+//int	pcap_datalink(pcap_t *);
+//int	pcap_major_version(pcap_t *);
+//int	pcap_minor_version(pcap_t *);
+
+static VALUE
+rbpcap_major_version(VALUE self)
+{
+    rbpcap_t *rbp;
+
+    Data_Get_Struct(self, rbpcap_t, rbp);
+	
+	if(! rbpcap_ready(rbp)) return self;
+	
+    return INT2NUM(pcap_major_version(rbp->pd));
+}
+
+
+static VALUE
+rbpcap_minor_version(VALUE self)
+{
+    rbpcap_t *rbp;
+
+    Data_Get_Struct(self, rbpcap_t, rbp);
+	
+	if(! rbpcap_ready(rbp)) return self;
+	
+    return INT2NUM(pcap_minor_version(rbp->pd));
 }
 
 /*
@@ -505,7 +543,12 @@ rbpcap_capture(VALUE self)
 
 	if(! rbpcap_ready(rbp)) return self; 
 	
-	fno = pcap_get_selectable_fd(rbp->pd);
+#if !defined(WIN32)
+        fno = pcap_get_selectable_fd(rbp->pd);
+#else
+        fno = pcap_fileno(rbp->pd);
+#endif
+
 
     for(;;) {
     	VALUE packet = rbpcap_next(self);
@@ -535,6 +578,8 @@ rbpcap_datalink(VALUE self)
 	
     return INT2NUM(pcap_datalink(rbp->pd));
 }
+
+
 
 /*
 * call-seq:
@@ -582,8 +627,13 @@ rbpcap_stats(VALUE self)
     hash = rb_hash_new();
     rb_hash_aset(hash, rb_str_new2("recv"), UINT2NUM(stat.ps_recv));
     rb_hash_aset(hash, rb_str_new2("drop"), UINT2NUM(stat.ps_drop));
+    rb_hash_aset(hash, rb_str_new2("idrop"), UINT2NUM(stat.ps_ifdrop));
     // drops by interface XXX not yet supported under pcap.h 2.4
-    // rb_hash_aset(hash, rb_str_new2("idrop"), UINT2NUM(stat.ps_ifdrop));
+
+//#if defined(WIN32)
+//    rb_hash_aset(hash, rb_str_new2("bs_capt"), UINT2NUM(stat.bs_capt));
+//#endif    
+    
     return hash;
 }
 
@@ -598,6 +648,9 @@ Init_pcaprub()
     rb_cPcap = rb_define_class("Pcap", rb_cObject);
     
     rb_define_module_function(rb_cPcap, "version", rbpcap_s_version, 0);
+    rb_define_module_function(rb_cPcap, "pcap_major_version", rbpcap_major_version, 0);
+    rb_define_module_function(rb_cPcap, "pcap_minor_version", rbpcap_minor_version, 0);
+    
     
     rb_define_module_function(rb_cPcap, "lookupdev", rbpcap_s_lookupdev, 0);  
     rb_define_module_function(rb_cPcap, "lookupnet", rbpcap_s_lookupnet, 1);
@@ -646,4 +699,37 @@ Init_pcaprub()
     */
     rb_define_method(rb_cPcap, "snaplen", rbpcap_snapshot, 0);
     rb_define_method(rb_cPcap, "stats", rbpcap_stats, 0);
+    
+    /* Pcap Error Codes */
+    rb_define_const(rb_cPcap, "DLT_AIRONET_HEADER", INT2NUM(DLT_AIRONET_HEADER));
+    /*
+     * Error codes for the pcap API.
+     * These will all be negative, so you can check for the success or
+     * failure of a call that returns these codes by checking for a
+     * negative value.
+     */
+    rb_define_const(rb_cPcap, "PCAP_ERROR", INT2NUM(PCAP_ERROR)); /* generic error code */
+    rb_define_const(rb_cPcap, "PCAP_ERROR_BREAK", INT2NUM(PCAP_ERROR_BREAK)); /* loop terminated by pcap_breakloop */
+    rb_define_const(rb_cPcap, "PCAP_ERROR_NOT_ACTIVATED", INT2NUM(PCAP_ERROR_NOT_ACTIVATED));	/* the capture needs to be activated */
+    rb_define_const(rb_cPcap, "PCAP_ERROR_ACTIVATED", INT2NUM(PCAP_ERROR_ACTIVATED));	/* the operation can't be performed on already activated captures */
+    rb_define_const(rb_cPcap, "PCAP_ERROR_NO_SUCH_DEVICE", INT2NUM(PCAP_ERROR_NO_SUCH_DEVIC));	/* no such device exists */
+    rb_define_const(rb_cPcap, "PCAP_ERROR_RFMON_NOTSUP", INT2NUM(PCAP_ERROR_RFMON_NOTSUP));	/* this device doesn't support rfmon (monitor) mode */
+    rb_define_const(rb_cPcap, "PCAP_ERROR_NOT_RFMON", INT2NUM(PCAP_ERROR_NOT_RFMON));	/* operation supported only in monitor mode */
+    rb_define_const(rb_cPcap, "PCAP_ERROR_PERM_DENIED", INT2NUM(PCAP_ERROR_PERM_DENIED));	/* no permission to open the device */
+    rb_define_const(rb_cPcap, "PCAP_ERROR_IFACE_NOT_UP", INT2NUM(PCAP_ERROR_IFACE_NOT_U));	/* interface isn't up */
+
+    /*
+     * Warning codes for the pcap API.
+     * These will all be positive and non-zero, so they won't look like
+     * errors.
+     */
+    rb_define_const(rb_cPcap, "PCAP_WARNING", INT2NUM(PCAP_WARNING));	/* generic warning code */
+    rb_define_const(rb_cPcap, "PCAP_WARNING_PROMISC_NOTSUP", INT2NUM(PCAP_WARNING_PROMISC_NOTSUP));	/* this device doesn't support promiscuous mode */
+
+    /*
+     * Value to pass to pcap_compile() as the netmask if you don't know what
+     * the netmask is.
+     */
+    rb_define_const(rb_cPcap, "PCAP_NETMASK_UNKNOWN", INT2NUM(PCAP_NETMASK_UNKNOWN));
+    
 }
