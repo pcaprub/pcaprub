@@ -61,7 +61,7 @@ rbpcap_s_lookupdev(VALUE self)
 
     /* Retrieve the device list from the local machine */
     if (pcap_findalldevs(&alldevs,eb) == -1) {
-        rb_raise(rb_eRuntimeError,"%s",eb);
+        rb_raise(eBindingError,"%s",eb);
     }
 
     /* Find the first interface with an address and not loopback */
@@ -73,7 +73,7 @@ rbpcap_s_lookupdev(VALUE self)
     }
     
     if (dev == NULL) {
-        rb_raise(rb_eRuntimeError,"%s","No valid interfaces found, Make sure WinPcap is installed.\n");
+        rb_raise(eBindingError,"%s","No valid interfaces found, Make sure WinPcap is installed.\n");
     }
     ret_dev = rb_str_new2(dev);
     /* We don't need any more the device list. Free it */
@@ -81,7 +81,7 @@ rbpcap_s_lookupdev(VALUE self)
 #else
     dev = pcap_lookupdev(eb);
     if (dev == NULL) {
-		rb_raise(rb_eRuntimeError, "%s", eb);
+		rb_raise(eBindingError, "%s", eb);
    }
     ret_dev = rb_str_new2(dev);
 #endif
@@ -643,11 +643,13 @@ Init_pcaprub()
     * 
     * Main class defined by the pcaprub extension.
     */
-    rb_cPcap = rb_define_class("Pcap", rb_cObject);
+    mPCAP = rb_define_module("PCAP")
+    
+    rb_cPcap = rb_define_class_under(mPCAP,"Pcap", rb_cObject);
     
     rb_define_module_function(rb_cPcap, "version", rbpcap_s_version, 0);
 
-    
+    eBindingError = rb_path2class("PCAP::BindingError");
     
     rb_define_module_function(rb_cPcap, "lookupdev", rbpcap_s_lookupdev, 0);  
     rb_define_module_function(rb_cPcap, "lookupnet", rbpcap_s_lookupnet, 1);
