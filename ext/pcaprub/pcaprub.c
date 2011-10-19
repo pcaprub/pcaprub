@@ -386,7 +386,7 @@ rbpcap_dump_open(VALUE self, VALUE filename)
 *   dump_open(filename)
 *
 *  dump_open() is called to open a "savefile" for  writing
-*/
+
 static VALUE
 rbpcap_dump_open_s(VALUE class, VALUE filename)
 {
@@ -394,7 +394,7 @@ rbpcap_dump_open_s(VALUE class, VALUE filename)
 
     return rbpcap_dump_open(iPcap, filename);
 }
-
+*/
 
 /*
 * call-seq:
@@ -702,7 +702,7 @@ Init_pcaprub()
     rb_define_singleton_method(rb_cPcap, "open_live", rbpcap_open_live_s, 4);
     rb_define_singleton_method(rb_cPcap, "open_offline", rbpcap_open_offline_s, 1);
     rb_define_singleton_method(rb_cPcap, "open_dead", rbpcap_open_dead_s, 2);
-    rb_define_singleton_method(rb_cPcap, "dump_open", rbpcap_dump_open_s, 1);
+    rb_define_singleton_method(rb_cPcap, "dump_open", rbpcap_dump_open, 1);
 	  
     
     rb_define_method(rb_cPcap, "dump", rbpcap_dump, 3);
