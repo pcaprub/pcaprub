@@ -362,8 +362,13 @@ rbpcap_open_dead_s(VALUE class, VALUE linktype, VALUE snaplen)
     return rbpcap_open_dead(iPcap, linktype, snaplen);
 }
 
-
-// transparent method 
+/*
+* call-seq:
+*   dump_open(filename)
+*
+*  dump_open() is called to open a "savefile" for  writing
+*/
+ 
 static VALUE
 rbpcap_dump_open(VALUE self, VALUE filename)
 {
@@ -376,6 +381,12 @@ rbpcap_dump_open(VALUE self, VALUE filename)
     
     if(! rbpcap_ready(rbp)) return self;
     
+    if (rbp->pdt)
+		   pcap_dump_close(rbp->pdt);
+    
+    rbp->pdt = NULL;
+    rb_raise(rb_eArgError, "Break! Made it here");
+    
     rbp->pdt = pcap_dump_open(
         rbp->pd,
         RSTRING_PTR(filename)
@@ -384,20 +395,6 @@ rbpcap_dump_open(VALUE self, VALUE filename)
     return self;
 }
 
-/*
-* call-seq:
-*   dump_open(filename)
-*
-*  dump_open() is called to open a "savefile" for  writing
-
-static VALUE
-rbpcap_dump_open_s(VALUE class, VALUE filename)
-{
-    VALUE iPcap = rb_funcall(rb_cPcap, rb_intern("new"), 0);
-
-    return rbpcap_dump_open(iPcap, filename);
-}
-*/
 
 /*
 * call-seq:
