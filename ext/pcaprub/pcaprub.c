@@ -376,16 +376,20 @@ rbpcap_dump_open(VALUE self, VALUE filename)
 
     if(TYPE(filename) != T_STRING)
        rb_raise(rb_eArgError, "filename must be a string");
-
+    
+    rb_raise(rb_eArgError, "Break! Made it here");
+      
     Data_Get_Struct(self, rbpcap_t, rbp);
     
     if(! rbpcap_ready(rbp)) return self;
+    
+    rb_raise(rb_eArgError, "Break2! Made it here");
     
     if (rbp->pdt)
 		   pcap_dump_close(rbp->pdt);
     
     rbp->pdt = NULL;
-    rb_raise(rb_eArgError, "Break! Made it here");
+    rb_raise(rb_eArgError, "Break3! Made it here");
     
     rbp->pdt = pcap_dump_open(
         rbp->pd,
