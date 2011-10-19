@@ -337,6 +337,7 @@ rbpcap_open_dead(VALUE self, VALUE linktype, VALUE snaplen)
     return self;
 }
 
+
 /*
 * 
 * call-seq:
@@ -360,6 +361,7 @@ rbpcap_open_dead_s(VALUE class, VALUE linktype, VALUE snaplen)
 
     return rbpcap_open_dead(iPcap, linktype, snaplen);
 }
+
 
 // transparent method 
 static VALUE
@@ -392,7 +394,6 @@ rbpcap_dump_open_s(VALUE class, VALUE filename)
 
     return rbpcap_dump_open(iPcap, filename);
 }
-
 
 
 /*
