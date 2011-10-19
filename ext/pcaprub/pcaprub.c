@@ -15,7 +15,7 @@
 
 
 static VALUE rb_cPcap;
-static VALUE mPCAP, eBindingError, eBPFilterError;
+static VALUE mPCAP, PCAPRUBError, eBindingError, eBPFilterError;
 
 #define PCAPRUB_VERSION "0.10-dev"
 
@@ -113,15 +113,20 @@ rbpcap_s_lookupnet(VALUE self, VALUE dev)
 	return(list);
 }
 
-
+/*
+* Check if PCAP file or device is bound and loaded 
+*/
 static int rbpcap_ready(rbpcap_t *rbp) {
 	if(! rbp->pd) {
-		rb_raise(rb_eArgError, "a device or pcap file must be opened first");
+		rb_raise(ePCAPRUBError, "a device or pcap file must be opened first");
 		return 0;
 	}
 	return 1;
 }
 
+/*
+* Garbage Collection
+*/
 static void rbpcap_free(rbpcap_t *rbp) {
 	if (rbp->pd)
 		pcap_close(rbp->pd);
@@ -133,6 +138,7 @@ static void rbpcap_free(rbpcap_t *rbp) {
 	rbp->pdt = NULL;
 	free(rbp);
 }
+
 /*
 * Creates a new Pcap instance and returns the object itself.
 */
@@ -178,7 +184,7 @@ rbpcap_setfilter(VALUE self, VALUE filter)
     Data_Get_Struct(self, rbpcap_t, rbp);
 
     if(TYPE(filter) != T_STRING)
-    	rb_raise(rb_eArgError, "filter must be a string");
+    	rb_raise(eBPFilterError, "filter must be a string");
 
 	if(! rbpcap_ready(rbp)) return self; 
 	
@@ -218,7 +224,7 @@ rbpcap_open_live(VALUE self, VALUE iface,VALUE snaplen,VALUE promisc, VALUE time
     		promisc_value = 0;
     		break;
     	default:
-    		rb_raise(rb_eTypeError, "Promisc Argument not boolean");
+    		rb_raise(ePCAPRUBError, "Promisc Argument not boolean");
     }
 
     Data_Get_Struct(self, rbpcap_t, rbp);
@@ -607,6 +613,7 @@ rbpcap_snapshot(VALUE self)
 *
 * - ["recv"] # number of packets received
 * - ["drop"] # number of packets dropped 
+* - ["idrop"] # number of packets dropped by interface
 * 
 */
 static VALUE
@@ -644,14 +651,15 @@ Init_pcaprub()
     * 
     * Main class defined by the pcaprub extension.
     */
-    mPCAP = rb_define_module("PCAP");
+    mPCAP = rb_define_module("PCAPRUB");
     
     rb_cPcap = rb_define_class_under(mPCAP,"Pcap", rb_cObject);
     
     rb_define_module_function(rb_cPcap, "version", rbpcap_s_version, 0);
 
-    eBindingError = rb_path2class("PCAP::BindingError");
-    eBPFilterError = rb_path2class("PCAP::BPFError");
+    ePCAPRUBError = rb_path2class("PCAPRUB::PCAPRUBError");
+    eBindingError = rb_path2class("PCAPRUB::BindingError");
+    eBPFilterError = rb_path2class("PCAPRUB::BPFError");
     
     rb_define_module_function(rb_cPcap, "lookupdev", rbpcap_s_lookupdev, 0);  
     rb_define_module_function(rb_cPcap, "lookupnet", rbpcap_s_lookupnet, 1);

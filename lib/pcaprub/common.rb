@@ -1,5 +1,5 @@
 
-module PCAP
+module PCAPRUB
   # The base exception for JSON errors.
   class PCAPRUBError < StandardError; end
 
