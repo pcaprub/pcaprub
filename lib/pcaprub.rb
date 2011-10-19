@@ -5,4 +5,4 @@ module PCAPRUB
 end
 
 #Force Include to allow backwards compatibility to ::PCAP.new
-include PCAP
+include PCAPRUB
