@@ -379,7 +379,10 @@ rbpcap_dump_open(VALUE self, VALUE filename)
     
     //rb_raise(rb_eArgError, "Break! Made it here");
       
-    Data_Get_Struct(self, rbpcap_t, rbp);
+    VALUE iPcap = rb_funcall(rb_cPcap, rb_intern("new"), 0);
+      
+    Data_Get_Struct(iPcap, rbpcap_t, rbp);
+    
     rb_raise(rb_eArgError, "Break1a! Made it here");
     
     if(! rbpcap_ready(rbp)) return self;
