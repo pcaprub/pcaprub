@@ -4,3 +4,4 @@ module JSON
   require 'pcaprub/ext'
 end
 
+include PCAP
