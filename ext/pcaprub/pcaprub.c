@@ -15,7 +15,7 @@
 
 
 static VALUE rb_cPcap;
-static VALUE mPCAP, PCAPRUBError, eBindingError, eBPFilterError;
+static VALUE mPCAP, ePCAPRUBError, eBindingError, eBPFilterError;
 
 #define PCAPRUB_VERSION "0.10-dev"
 
