@@ -644,7 +644,7 @@ Init_pcaprub()
     * 
     * Main class defined by the pcaprub extension.
     */
-    mPCAP = rb_define_module("PCAP")
+    mPCAP = rb_define_module("PCAP");
     
     rb_cPcap = rb_define_class_under(mPCAP,"Pcap", rb_cObject);
     
