@@ -15,6 +15,7 @@
 
 
 static VALUE rb_cPcap;
+static VALUE mPCAP, eBindingError, eBPFilterError;
 
 #define PCAPRUB_VERSION "0.10-dev"
 
@@ -186,10 +187,10 @@ rbpcap_setfilter(VALUE self, VALUE filter)
     		rb_raise(rb_eRuntimeError, "%s", eb);
 
     if(pcap_compile(rbp->pd, &bpf, RSTRING_PTR(filter), 0, mask) < 0)
-    	rb_raise(rb_eRuntimeError, "invalid bpf filter");
+    	rb_raise(eBPFilterError, "invalid bpf filter");
 
     if(pcap_setfilter(rbp->pd, &bpf) < 0)
-    	rb_raise(rb_eRuntimeError, "unable to set bpf filter");
+    	rb_raise(eBPFilterError, "unable to set bpf filter");
 
     return self;
 }
@@ -217,7 +218,7 @@ rbpcap_open_live(VALUE self, VALUE iface,VALUE snaplen,VALUE promisc, VALUE time
     		promisc_value = 0;
     		break;
     	default:
-    		rb_raise(rb_eTypeError, "Argument not boolean");
+    		rb_raise(rb_eTypeError, "Promisc Argument not boolean");
     }
 
     Data_Get_Struct(self, rbpcap_t, rbp);
@@ -650,6 +651,7 @@ Init_pcaprub()
     rb_define_module_function(rb_cPcap, "version", rbpcap_s_version, 0);
 
     eBindingError = rb_path2class("PCAP::BindingError");
+    eBPFilterError = rb_path2class("PCAP::BPFError");
     
     rb_define_module_function(rb_cPcap, "lookupdev", rbpcap_s_lookupdev, 0);  
     rb_define_module_function(rb_cPcap, "lookupnet", rbpcap_s_lookupnet, 1);
