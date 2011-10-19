@@ -373,6 +373,9 @@ rbpcap_dump_open(VALUE self, VALUE filename)
        rb_raise(rb_eArgError, "filename must be a string");
 
     Data_Get_Struct(self, rbpcap_t, rbp);
+    
+    if(! rbpcap_ready(rbp)) return self;
+    
     rbp->pdt = pcap_dump_open(
         rbp->pd,
         RSTRING_PTR(filename)
