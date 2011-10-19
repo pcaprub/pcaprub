@@ -377,9 +377,10 @@ rbpcap_dump_open(VALUE self, VALUE filename)
     if(TYPE(filename) != T_STRING)
        rb_raise(rb_eArgError, "filename must be a string");
     
-    rb_raise(rb_eArgError, "Break! Made it here");
+    //rb_raise(rb_eArgError, "Break! Made it here");
       
     Data_Get_Struct(self, rbpcap_t, rbp);
+    rb_raise(rb_eArgError, "Break1a! Made it here");
     
     if(! rbpcap_ready(rbp)) return self;
     
