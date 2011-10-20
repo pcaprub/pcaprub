@@ -389,10 +389,10 @@ rbpcap_dump_open(VALUE self, VALUE filename)
     
     //rb_raise(rb_eArgError, "Break2! Made it here");
     
-    if (rbp->pdt)
-		   pcap_dump_close(rbp->pdt);
+    //if (rbp->pdt)
+		//   pcap_dump_close(rbp->pdt);
     
-    rbp->pdt = NULL;
+    //rbp->pdt = NULL;
     //rb_raise(rb_eArgError, "Break3! Made it here");
     
     rbp->pdt = pcap_dump_open(
