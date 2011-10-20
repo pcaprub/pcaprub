@@ -369,6 +369,18 @@ rbpcap_open_dead_s(VALUE class, VALUE linktype, VALUE snaplen)
 *  dump_open() is called to open a "savefile" for  writing
 */
  
+ VALUE rcap_open_live(VALUE class, VALUE input)
+{
+  char errbuf[PCAP_ERRBUF_SIZE];
+  char* in = StringValuePtr(input);
+  pcap_t* p;
+  p = pcap_open_live(in, 65335, 1, 10, errbuf);
+  if(p == NULL)
+    rb_raise(rb_eArgError,&quot;%s&quot;, errbuf);
+  VALUE tdata = Data_Wrap_Struct(class, 0, rcap_free, p);
+  return tdata;
+}
+ 
 static VALUE
 rbpcap_dump_open(VALUE self, VALUE filename)
 {
@@ -376,31 +388,18 @@ rbpcap_dump_open(VALUE self, VALUE filename)
 
     if(TYPE(filename) != T_STRING)
        rb_raise(rb_eArgError, "filename must be a string");
+        
+    Data_Get_Struct(self, rbpcap_t, rbp);
     
-    //rb_raise(rb_eArgError, "Break! Made it here");
-      
-    VALUE iPcap = rb_funcall(rb_cPcap, rb_intern("new"), 0);
-      
-    Data_Get_Struct(iPcap, rbpcap_t, rbp);
-    
-    //rb_raise(rb_eArgError, "Break1a! Made it here");
-    
-     if(! rbpcap_ready(rbp)) return self;
-    
-    //rb_raise(rb_eArgError, "Break2! Made it here");
-    
-    //if (rbp->pdt)
-		//   pcap_dump_close(rbp->pdt);
-    
-    //rbp->pdt = NULL;
-    //rb_raise(rb_eArgError, "Break3! Made it here");
+    if(! rbpcap_ready(rbp)) return self;
     
     rbp->pdt = pcap_dump_open(
         rbp->pd,
         RSTRING_PTR(filename)
     );
     
-    rb_raise(rb_eArgError, "Break4! Made it here");
+    if(!rbp->pdt)
+    	rb_raise(rb_eRuntimeError, "Missing Packet Dumper.. something went wrong.");
     
     return self;
 }
