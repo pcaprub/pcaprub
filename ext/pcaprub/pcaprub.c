@@ -385,7 +385,7 @@ rbpcap_dump_open(VALUE self, VALUE filename)
     
     //rb_raise(rb_eArgError, "Break1a! Made it here");
     
-    if(! rbpcap_ready(rbp)) return self;
+    // if(! rbpcap_ready(rbp)) return self;
     
     //rb_raise(rb_eArgError, "Break2! Made it here");
     
