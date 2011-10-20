@@ -383,17 +383,17 @@ rbpcap_dump_open(VALUE self, VALUE filename)
       
     Data_Get_Struct(iPcap, rbpcap_t, rbp);
     
-    rb_raise(rb_eArgError, "Break1a! Made it here");
+    //rb_raise(rb_eArgError, "Break1a! Made it here");
     
     if(! rbpcap_ready(rbp)) return self;
     
-    rb_raise(rb_eArgError, "Break2! Made it here");
+    //rb_raise(rb_eArgError, "Break2! Made it here");
     
     if (rbp->pdt)
 		   pcap_dump_close(rbp->pdt);
     
     rbp->pdt = NULL;
-    rb_raise(rb_eArgError, "Break3! Made it here");
+    //rb_raise(rb_eArgError, "Break3! Made it here");
     
     rbp->pdt = pcap_dump_open(
         rbp->pd,
