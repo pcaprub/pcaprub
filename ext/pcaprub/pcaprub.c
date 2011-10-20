@@ -768,7 +768,7 @@ Init_pcaprub()
     rb_define_singleton_method(rb_cPcap, "open_dead", rbpcap_open_dead_s, 2);
     
     rb_define_method(rb_cPcap, "dump_open", rbpcap_dump_open, 1);
-    rb_define_method(rb_cPcap, "dump_close", rbpcap_dump_close, 1);
+    rb_define_method(rb_cPcap, "dump_close", rbpcap_dump_close, 0);
 	  rb_define_method(rb_cPcap, "dump", rbpcap_dump, 3);
     rb_define_method(rb_cPcap, "each", rbpcap_each, 0);
     rb_define_method(rb_cPcap, "next", rbpcap_next, 0);
