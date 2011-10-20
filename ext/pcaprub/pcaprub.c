@@ -368,7 +368,7 @@ rbpcap_open_dead_s(VALUE class, VALUE linktype, VALUE snaplen)
 *
 *  dump_open() is called to open a "savefile" for  writing
 */
- 
+/* 
  VALUE rcap_open_live(VALUE class, VALUE input)
 {
   char errbuf[PCAP_ERRBUF_SIZE];
@@ -380,7 +380,7 @@ rbpcap_open_dead_s(VALUE class, VALUE linktype, VALUE snaplen)
   VALUE tdata = Data_Wrap_Struct(class, 0, rcap_free, p);
   return tdata;
 }
- 
+*/ 
 static VALUE
 rbpcap_dump_open(VALUE self, VALUE filename)
 {
