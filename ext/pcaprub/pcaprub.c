@@ -793,6 +793,7 @@ Init_pcaprub()
 	  rb_define_method(rb_cPcap, "dump", rbpcap_dump, 3);
     rb_define_method(rb_cPcap, "each", rbpcap_capture, 0);
     rb_define_method(rb_cPcap, "next", rbpcap_next, 0);
+    rb_define_method(rb_cPcap, "dump_next", rbpcap_next, 0);
     rb_define_method(rb_cPcap, "setfilter", rbpcap_setfilter, 1);
     rb_define_method(rb_cPcap, "inject", rbpcap_inject, 1);
     rb_define_method(rb_cPcap, "datalink", rbpcap_datalink, 0);
