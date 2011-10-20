@@ -434,6 +434,10 @@ rbpcap_dump(VALUE self, VALUE caplen, VALUE pktlen, VALUE packet)
     pcap_hdr.caplen = NUM2UINT(caplen);
     pcap_hdr.len = NUM2UINT(pktlen);
 
+ //capture.next is yeilding an 8Bit ASCII  string 
+ //return rb_str_new((char *) job.pkt, job.hdr.caplen);
+ // Call dump such that next{|pk| SNAPLENGTH, pk.length, pk}
+
     pcap_dump(
         (u_char*)rbp->pdt,        
         &pcap_hdr,
@@ -442,6 +446,8 @@ rbpcap_dump(VALUE self, VALUE caplen, VALUE pktlen, VALUE packet)
 
     return self;
 }
+
+
 
 /*
 * call-seq:
@@ -502,15 +508,56 @@ rbpcap_next(VALUE self)
 #ifdef MAKE_TRAP
 	TRAP_BEG;
 #endif
+
+  // ret will contain the number of packets captured during the trap (ie one) since this is an iterator.
 	ret = pcap_dispatch(rbp->pd, 1, (pcap_handler) rbpcap_handler, (u_char *)&job);
+
 #ifdef MAKE_TRAP
 	TRAP_END;
 #endif
 
-	if(rbp->type == OFFLINE && ret <= 0) return Qnil;
+
+	if(rbp->type == OFFLINE && ret <= 0) 
+	  return Qnil;
 
 	if(ret > 0 && job.hdr.caplen > 0)
-             return rb_str_new((char *) job.pkt, job.hdr.caplen);
+    return rb_str_new((char *) job.pkt, job.hdr.caplen);
+
+	return Qnil;
+}
+
+static VALUE
+rbpcap_dump_next(VALUE self)
+{
+	rbpcap_t *rbp;
+	rbpcapjob_t job;
+	char eb[PCAP_ERRBUF_SIZE];
+	int ret;	
+	
+	Data_Get_Struct(self, rbpcap_t, rbp);
+	if(! rbpcap_ready(rbp)) return self; 
+	pcap_setnonblock(rbp->pd, 1, eb);
+
+#ifdef MAKE_TRAP
+	TRAP_BEG;
+#endif
+
+  // ret will contain the number of packets captured during the trap (ie one) since this is an iterator.
+	ret = pcap_dispatch(rbp->pd, 1, (pcap_handler) rbpcap_handler, (u_char *)&job);
+
+#ifdef MAKE_TRAP
+	TRAP_END;
+#endif
+
+
+	if(rbp->type == OFFLINE && ret <= 0) 
+	  return Qnil;
+
+	if(ret > 0 && job.hdr.caplen > 0) {
+    VALUE packet = rbpcap_dump(self, job.hdr.caplen, job.hdr.caplen, job.pkt);
+    
+    return rb_str_new((char *) job.pkt, job.hdr.caplen);
+  }  
 
 	return Qnil;
 }
