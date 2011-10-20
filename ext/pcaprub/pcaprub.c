@@ -15,7 +15,7 @@
 
 
 static VALUE rb_cPcap;
-static VALUE mPCAP, ePCAPRUBError, eBindingError, eBPFilterError;
+static VALUE mPCAP, ePCAPRUBError, eDumperError, eBindingError, eBPFilterError;
 
 #define PCAPRUB_VERSION "0.10-dev"
 
@@ -124,8 +124,10 @@ static int rbpcap_ready(rbpcap_t *rbp) {
 	return 1;
 }
 
+
+
 /*
-* Garbage Collection
+* Automated Garbage Collection
 */
 static void rbpcap_free(rbpcap_t *rbp) {
 	if (rbp->pd)
@@ -368,19 +370,6 @@ rbpcap_open_dead_s(VALUE class, VALUE linktype, VALUE snaplen)
 *
 *  dump_open() is called to open a "savefile" for  writing
 */
-/* 
- VALUE rcap_open_live(VALUE class, VALUE input)
-{
-  char errbuf[PCAP_ERRBUF_SIZE];
-  char* in = StringValuePtr(input);
-  pcap_t* p;
-  p = pcap_open_live(in, 65335, 1, 10, errbuf);
-  if(p == NULL)
-    rb_raise(rb_eArgError,&quot;%s&quot;, errbuf);
-  VALUE tdata = Data_Wrap_Struct(class, 0, rcap_free, p);
-  return tdata;
-}
-*/ 
 static VALUE
 rbpcap_dump_open(VALUE self, VALUE filename)
 {
@@ -399,9 +388,34 @@ rbpcap_dump_open(VALUE self, VALUE filename)
     );
     
     if(!rbp->pdt)
-    	rb_raise(rb_eRuntimeError, "Missing Packet Dumper.. something went wrong.");
+    	rb_raise(eDumperError, "Stream could not be initialized or opened.");
     
     return self;
+}
+
+/*
+* call-seq:
+*   dump_close()
+*
+*  dump_close() is called to manually close  a "savefile"
+*/
+static VALUE
+rbpcap_dump_close(VALUE self)
+{
+    rbpcap_t *rbp;
+    
+    Data_Get_Struct(self, rbpcap_t, rbp);
+    
+    if(! rbpcap_ready(rbp)) return self;
+    
+    if(!rbp->pdt)
+    	rb_raise(eDumperError, "Stream is already closed.");
+    
+    if (rbp->pdt)
+		  pcap_dump_close(rbp->pdt);
+
+    return self;
+	
 }
 
 
@@ -435,10 +449,10 @@ rbpcap_dump(VALUE self, VALUE caplen, VALUE pktlen, VALUE packet)
     pcap_hdr.len = NUM2UINT(pktlen);
 
  //capture.next is yeilding an 8Bit ASCII  string 
- //return rb_str_new((char *) job.pkt, job.hdr.caplen);
- // Call dump such that next{|pk| SNAPLENGTH, pk.length, pk}
+ //  ->  return rb_str_new((char *) job.pkt, job.hdr.caplen);
+ //Call dump such that capture.next{|pk| capture.dump(pk.length, pk.length, pk)}
 
-    pcap_dump(
+    pcap_dump( 
         (u_char*)rbp->pdt,        
         &pcap_hdr,
         (unsigned char *)RSTRING_PTR(packet)
@@ -526,42 +540,6 @@ rbpcap_next(VALUE self)
 	return Qnil;
 }
 
-static VALUE
-rbpcap_dump_next(VALUE self)
-{
-	rbpcap_t *rbp;
-	rbpcapjob_t job;
-	char eb[PCAP_ERRBUF_SIZE];
-	int ret;	
-	
-	Data_Get_Struct(self, rbpcap_t, rbp);
-	if(! rbpcap_ready(rbp)) return self; 
-	pcap_setnonblock(rbp->pd, 1, eb);
-
-#ifdef MAKE_TRAP
-	TRAP_BEG;
-#endif
-
-  // ret will contain the number of packets captured during the trap (ie one) since this is an iterator.
-	ret = pcap_dispatch(rbp->pd, 1, (pcap_handler) rbpcap_handler, (u_char *)&job);
-
-#ifdef MAKE_TRAP
-	TRAP_END;
-#endif
-
-
-	if(rbp->type == OFFLINE && ret <= 0) 
-	  return Qnil;
-
-	if(ret > 0 && job.hdr.caplen > 0) {
-    VALUE packet = rbpcap_dump(self, job.hdr.caplen, job.hdr.caplen, job.pkt);
-    
-    return rb_str_new((char *) job.pkt, job.hdr.caplen);
-  }  
-
-	return Qnil;
-}
-
 /*
 * call-seq:
 *   each() { |packet| ... } 
@@ -570,12 +548,12 @@ rbpcap_dump_next(VALUE self)
 *
 */
 static VALUE
-rbpcap_capture(VALUE self)
+rbpcap_each(VALUE self)
 {
-    rbpcap_t *rbp;
+  rbpcap_t *rbp;
 	int fno = -1;
 	
-    Data_Get_Struct(self, rbpcap_t, rbp);
+  Data_Get_Struct(self, rbpcap_t, rbp);
 
 	if(! rbpcap_ready(rbp)) return self; 
 	
@@ -585,11 +563,10 @@ rbpcap_capture(VALUE self)
         fno = pcap_fileno(rbp->pd);
 #endif
 
-
     for(;;) {
     	VALUE packet = rbpcap_next(self);
     	if(packet == Qnil && rbp->type == OFFLINE) break;
-		packet == Qnil ? rb_thread_wait_fd(fno) : rb_yield(packet);
+		  packet == Qnil ? rb_thread_wait_fd(fno) : rb_yield(packet);
     }
 
     return self;
@@ -727,6 +704,7 @@ Init_pcaprub()
     ePCAPRUBError = rb_path2class("PCAPRUB::PCAPRUBError");
     eBindingError = rb_path2class("PCAPRUB::BindingError");
     eBPFilterError = rb_path2class("PCAPRUB::BPFError");
+    eDumperError = rb_path2class("PCAPRUB::DumperError");
     
     rb_define_module_function(rb_cPcap, "lookupdev", rbpcap_s_lookupdev, 0);  
     rb_define_module_function(rb_cPcap, "lookupnet", rbpcap_s_lookupnet, 1);
@@ -790,10 +768,10 @@ Init_pcaprub()
     rb_define_singleton_method(rb_cPcap, "open_dead", rbpcap_open_dead_s, 2);
     
     rb_define_method(rb_cPcap, "dump_open", rbpcap_dump_open, 1);
+    rb_define_method(rb_cPcap, "dump_close", rbpcap_dump_close, 1);
 	  rb_define_method(rb_cPcap, "dump", rbpcap_dump, 3);
-    rb_define_method(rb_cPcap, "each", rbpcap_capture, 0);
+    rb_define_method(rb_cPcap, "each", rbpcap_each, 0);
     rb_define_method(rb_cPcap, "next", rbpcap_next, 0);
-    rb_define_method(rb_cPcap, "dump_next", rbpcap_dump_next, 0);
     rb_define_method(rb_cPcap, "setfilter", rbpcap_setfilter, 1);
     rb_define_method(rb_cPcap, "inject", rbpcap_inject, 1);
     rb_define_method(rb_cPcap, "datalink", rbpcap_datalink, 0);
