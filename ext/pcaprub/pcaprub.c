@@ -413,6 +413,8 @@ rbpcap_dump_close(VALUE self)
     
     if (rbp->pdt)
 		  pcap_dump_close(rbp->pdt);
+		  
+	  rbp->pdt = NULL;  
 
     return self;
 	
