@@ -705,32 +705,6 @@ Init_pcaprub()
     rb_define_const(rb_cPcap, "DLT_LINUX_SLL", INT2NUM(DLT_LINUX_SLL));
     rb_define_const(rb_cPcap, "DLT_PRISM_HEADER", INT2NUM(DLT_PRISM_HEADER));
     rb_define_const(rb_cPcap, "DLT_AIRONET_HEADER", INT2NUM(DLT_AIRONET_HEADER));
-
-    rb_define_singleton_method(rb_cPcap, "new", rbpcap_new_s, 0);
-
-    rb_define_singleton_method(rb_cPcap, "open_live", rbpcap_open_live_s, 4);
-    rb_define_singleton_method(rb_cPcap, "open_offline", rbpcap_open_offline_s, 1);
-    rb_define_singleton_method(rb_cPcap, "open_dead", rbpcap_open_dead_s, 2);
-    rb_define_singleton_method(rb_cPcap, "dump_open", rbpcap_dump_open, 1);
-	  
-    
-    rb_define_method(rb_cPcap, "dump", rbpcap_dump, 3);
-    rb_define_method(rb_cPcap, "each", rbpcap_capture, 0);
-    rb_define_method(rb_cPcap, "next", rbpcap_next, 0);
-    rb_define_method(rb_cPcap, "setfilter", rbpcap_setfilter, 1);
-    rb_define_method(rb_cPcap, "inject", rbpcap_inject, 1);
-    rb_define_method(rb_cPcap, "datalink", rbpcap_datalink, 0);
-    rb_define_method(rb_cPcap, "snapshot", rbpcap_snapshot, 0);
-    rb_define_method(rb_cPcap, "pcap_major_version", rbpcap_major_version, 0);
-    rb_define_method(rb_cPcap, "pcap_minor_version", rbpcap_minor_version, 0);
-    
-    /*
-    * Document-method: snaplen
-    * Alias of snapshot
-    */
-    rb_define_method(rb_cPcap, "snaplen", rbpcap_snapshot, 0);
-    rb_define_method(rb_cPcap, "stats", rbpcap_stats, 0);
-    
     /* Pcap Error Codes 
      * Error codes for the pcap API.
      * These will all be negative, so you can check for the success or
@@ -760,5 +734,32 @@ Init_pcaprub()
      * the netmask is.
      */
     rb_define_const(rb_cPcap, "PCAP_NETMASK_UNKNOWN", INT2NUM(PCAP_NETMASK_UNKNOWN));
+
+
+    rb_define_singleton_method(rb_cPcap, "new", rbpcap_new_s, 0);
+
+    rb_define_singleton_method(rb_cPcap, "open_live", rbpcap_open_live_s, 4);
+    rb_define_singleton_method(rb_cPcap, "open_offline", rbpcap_open_offline_s, 1);
+    rb_define_singleton_method(rb_cPcap, "open_dead", rbpcap_open_dead_s, 2);
+    
+    rb_define_method(rb_cPcap, "dump_open", rbpcap_dump_open, 1);
+	  rb_define_method(rb_cPcap, "dump", rbpcap_dump, 3);
+    rb_define_method(rb_cPcap, "each", rbpcap_capture, 0);
+    rb_define_method(rb_cPcap, "next", rbpcap_next, 0);
+    rb_define_method(rb_cPcap, "setfilter", rbpcap_setfilter, 1);
+    rb_define_method(rb_cPcap, "inject", rbpcap_inject, 1);
+    rb_define_method(rb_cPcap, "datalink", rbpcap_datalink, 0);
+    rb_define_method(rb_cPcap, "snapshot", rbpcap_snapshot, 0);
+    rb_define_method(rb_cPcap, "pcap_major_version", rbpcap_major_version, 0);
+    rb_define_method(rb_cPcap, "pcap_minor_version", rbpcap_minor_version, 0);
+    
+    /*
+    * Document-method: snaplen
+    * Alias of snapshot
+    */
+    rb_define_method(rb_cPcap, "snaplen", rbpcap_snapshot, 0);
+    rb_define_method(rb_cPcap, "stats", rbpcap_stats, 0);
+    
+
     
 }
