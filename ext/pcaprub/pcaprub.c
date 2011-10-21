@@ -611,7 +611,7 @@ rbpcap_next_packet(VALUE self)
 	if(ret > 0 && job.hdr.caplen > 0)
     {
       rbpacket = ALLOC(rbpacket_t);
-      rbpacket->hdr = job.hdr;
+      rbpacket->hdr = &job.hdr;
       rbpacket->pkt = rb_str_new((char *) job.pkt, job.hdr.caplen);
       return Data_Wrap_Struct(rb_cPkt, 0, rbpacket_free, rbpacket);
     
