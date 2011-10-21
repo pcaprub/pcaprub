@@ -141,19 +141,18 @@ static void rbpcap_free(rbpcap_t *rbp) {
 /*
 * Automated Garbage Collection for Packet Class
 */
-static void rbpacket_free(void *p)
+static void rbpacket_free(rbpacket_t *rbpacket)
 {
   
-  rbpacket_t* rbpacket = (rbpacket_t*)p;
+  if(rbpacket->hdr != NULL) {
+    rbpacket->hdr = NULL;
+  }
   
-  if(rbpacket->hdr != NULL)
-    free(rbpacket->hdr);
+  if(rbpacket->pkt != NULL) {
+    rbpacket->pkt = NULL;
+  }
   
-  if(rbpacket->pkt != NULL)
-    free(rbpacket->pkt);
-  
-  if(rbpacket != NULL)
-    free(rbpacket);
+  free(rbpacket);
 }
 
 /*
