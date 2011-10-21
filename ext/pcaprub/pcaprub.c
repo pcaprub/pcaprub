@@ -512,6 +512,12 @@ rbpcap_inject(VALUE self, VALUE payload)
 }
 
 
+/*
+*
+* Packet Job Call back from pcap_dispatch
+*
+*/
+
 static void rbpcap_handler(rbpcapjob_t *job, struct pcap_pkthdr *hdr, u_char *pkt){
 	job->pkt = (unsigned char *)pkt;
 	job->hdr = *hdr;
@@ -558,6 +564,7 @@ rbpcap_next_data(VALUE self)
 	return Qnil;
 }
 
+
 /*
 *
 * Returns the next packet from the packet capture device.
@@ -567,69 +574,53 @@ rbpcap_next_data(VALUE self)
 * If the next_packet() is unsuccessful, Null is returned.
 */
 
-/*
-  rbpacket_t* rbpacket;
-  Data_Get_Struct(self, rbpacket_t, rbpacket);
-  return INT2NUM(rbpacket->hdr->ts.tv_sec);
- */
 static VALUE
 rbpcap_next_packet(VALUE self)
-{
-	struct pcap_pkthdr h;
-  struct pcap_pkthdr* h2;
-	
+{	
 	rbpcap_t *rbp;
 	rbpcapjob_t job;
 	char eb[PCAP_ERRBUF_SIZE];
 	int ret;	
 	
-	const u_char* pkt;
-  u_char* pkt2;
-	
 	rbpacket_t* rbpacket;
-  VALUE tdata;
 	
 	Data_Get_Struct(self, rbpcap_t, rbp);
 	
 	if(! rbpcap_ready(rbp)) return self; 
+
 	pcap_setnonblock(rbp->pd, 1, eb);
 
 #ifdef MAKE_TRAP
 	TRAP_BEG;
 #endif
-
-  pkt = pcap_next(rbp->pd, &h);
+  
+  // int pcap_next_ex (pcap_t *p, struct pcap_pkthdr **pkt_header, const u_char **pkt_data);	
+	// int pcap_dispatch(pcap_t *p, int cnt, pcap_handler callback, u_char *user);
+	
+	// ret will contain the number of packets captured during the trap (ie one) since this is an iterator.
+	
+	ret = pcap_dispatch(rbp->pd, 1, (pcap_handler) rbpcap_handler, (u_char *)&job);
 
 #ifdef MAKE_TRAP
 	TRAP_END;
 #endif
-  
-  if(pkt == NULL)
-    return Qnil;
-  
-  printf("pkt: %s\n", pkt);
-  
-  pkt2 = ALLOC_N(u_char, h.caplen);
-  h2 = ALLOC(struct pcap_pkthdr);
-  	
-	if(h.caplen > 0) {
-	  
-	  memcpy(pkt2, pkt, h.caplen);
-    memcpy(h2, &h, sizeof(struct pcap_pkthdr));
+
+	if(rbp->type == OFFLINE && ret <= 0) 
+	  return Qnil;
+
+	if(ret > 0 && job.hdr.caplen > 0)
+    {
+      rbpacket = ALLOC(rbpacket_t);
+      rbpacket->hdr = job.hdr;
+      rbpacket->pkt = rb_str_new((char *) job.pkt, job.hdr.caplen);
+      return Data_Wrap_Struct(rb_cPkt, 0, rbpacket_free, rbpacket);
     
-    printf("pkt2: %s\n", pkt2);
-    
-    rbpacket = ALLOC(rbpacket_t);
-    rbpacket->hdr = h2;
-    rbpacket->pkt = pkt2;
-	    
-	  tdata = Data_Wrap_Struct(rb_cPkt, 0, rbpacket_free, rbpacket);
-    return tdata;
-    //return rb_str_new((char *) job.pkt, job.hdr.caplen);
-  }
-	
+    }
+
 	return Qnil;
+	
 }
+
 
 /*
 * call-seq:
