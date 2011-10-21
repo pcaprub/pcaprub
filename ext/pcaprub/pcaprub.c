@@ -825,8 +825,12 @@ rbpacket_data(VALUE self)
 {
   rbpacket_t* rbpacket;
   Data_Get_Struct(self, rbpacket_t, rbpacket);
+  
+  printf("pkt data: %s\n", rbpacket->pkt);
+  
   if(rbpacket->pkt == NULL)
     return Qnil;
+    
   return Data_Wrap_Struct(rb_cString, 0, NULL, rbpacket->pkt);
 }
 
