@@ -615,6 +615,7 @@ rbpcap_next_packet(VALUE self)
       
       printf("pkt caplen: %d\n", job.hdr.caplen);
       printf("pkt len: %d\n", job.hdr.len);
+      printf("pkt data: %s\n", (unsigned char *)job.pkt);
       
       rbpacket->pkt = rb_str_new((unsigned char *)job.pkt, job.hdr.caplen);
       return Data_Wrap_Struct(rb_cPkt, 0, rbpacket_free, rbpacket);
