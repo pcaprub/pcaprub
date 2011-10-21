@@ -639,7 +639,7 @@ rbpcap_next_packet(VALUE self)
 
 /*
 * call-seq:
-*   each() { |packet| ... } 
+*   each_data() { |packet| ... } 
 *
 * Yields each packet from the capture to the passed-in block in turn.
 *
@@ -672,7 +672,7 @@ rbpcap_each_data(VALUE self)
 
 /*
 * call-seq:
-*   each() { |packet| ... } 
+*   each_packet() { |packet| ... } 
 *
 * Yields each packet from the capture to the passed-in block in turn.
 *
