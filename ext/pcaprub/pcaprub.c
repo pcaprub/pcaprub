@@ -661,7 +661,7 @@ rbpcap_each_data(VALUE self)
 #endif
 
   for(;;) {
-  	VALUE packet = rbpcap_next(self);
+  	VALUE packet = rbpcap_next_data(self);
   	if(packet == Qnil && rbp->type == OFFLINE) break;
 	  packet == Qnil ? rb_thread_wait_fd(fno) : rb_yield(packet);
   }
