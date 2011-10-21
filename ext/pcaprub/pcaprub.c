@@ -524,7 +524,7 @@ static void rbpcap_handler(rbpcapjob_t *job, struct pcap_pkthdr *hdr, u_char *pk
 }
 
 /*
-*
+**
 * Returns the next packet from the packet capture device.
 * 
 * Returns a string with the packet data.
@@ -593,11 +593,7 @@ rbpcap_next_packet(VALUE self)
 #ifdef MAKE_TRAP
 	TRAP_BEG;
 #endif
-  
-  // int pcap_next_ex (pcap_t *p, struct pcap_pkthdr **pkt_header, const u_char **pkt_data);	
-	// int pcap_dispatch(pcap_t *p, int cnt, pcap_handler callback, u_char *user);
-	// ret will contain the number of packets captured during the trap (ie one) since this is an iterator.
-	
+  	
 	ret = pcap_dispatch(rbp->pd, 1, (pcap_handler) rbpcap_handler, (u_char *)&job);
 
 #ifdef MAKE_TRAP
@@ -613,11 +609,9 @@ rbpcap_next_packet(VALUE self)
       rbpacket->hdr = &job.hdr;
       rbpacket->pkt = (u_char *)&job.pkt;
       return Data_Wrap_Struct(rb_cPkt, 0, rbpacket_free, rbpacket);
-    
     }
 
 	return Qnil;
-	
 }
 
 
@@ -658,7 +652,7 @@ rbpcap_each_data(VALUE self)
 * call-seq:
 *   each_packet() { |packet| ... } 
 *
-* Yields each packet from the capture to the passed-in block in turn.
+* Yields a PCAP::Packet from the capture to the passed-in block in turn.
 *
 */
 static VALUE
@@ -802,7 +796,11 @@ rbpcap_stats(VALUE self)
   return hash;
 }
 
-
+/*
+*
+* Returns the EPOCH integer from the ts.tv_sec record in the PCAP::Packet header  
+* 
+*/
 static VALUE 
 rbpacket_time(VALUE self)
 {
@@ -811,28 +809,68 @@ rbpacket_time(VALUE self)
   return INT2NUM(rbpacket->hdr->ts.tv_sec);
 }
 
+/*
+*
+* Returns the tv_usec integer from the ts.tv_usec record in the PCAP::Packet header  
+* timestamp microseconds 
+* the microseconds when this packet was captured, as an offset to ts_sec. 
+* Beware: this value shouldn't reach 1 second (1 000 000), in this case ts_sec must be increased instead! 
+*
+* Ruby Microsecond Handling
+* Time.at(946684800.2).usec #=> 200000
+* Time.now.usec
+*/
+
+static VALUE 
+rbpacket_microsec(VALUE self)
+{
+  rbpacket_t* rbpacket;
+  Data_Get_Struct(self, rbpacket_t, rbpacket);
+  return INT2NUM(rbpacket->hdr->ts.tv_usec);
+}
+
+
+/*
+*
+* Returns the integer length of packet length field from the in the PCAP::Packet header 
+* 
+*/
 static VALUE 
 rbpacket_length(VALUE self)
+{
+  rbpacket_t* rbpacket;
+  Data_Get_Struct(self, rbpacket_t, rbpacket);
+  return INT2NUM(rbpacket->hdr->len);
+}
+
+/*
+*
+* Returns the integer length of capture len from the in the PCAP::Packet header 
+* 
+*/
+static VALUE 
+rbpacket_caplen(VALUE self)
 {
   rbpacket_t* rbpacket;
   Data_Get_Struct(self, rbpacket_t, rbpacket);
   return INT2NUM(rbpacket->hdr->caplen);
 }
 
+/*
+*
+* Returns the integer PCAP MINOR LIBRARY value unless capture 
+* 
+*/
 static VALUE 
 rbpacket_data(VALUE self)
 {
   rbpacket_t* rbpacket;
   Data_Get_Struct(self, rbpacket_t, rbpacket);
   
-  //printf("pkt data: %s\n", rbpacket->pkt);
-  
   if(rbpacket->pkt == NULL)
     return Qnil;
   
-  // return Data_Wrap_Struct(rb_cString, 0, NULL, rbpacket->pkt);  
   return rb_str_new((char *) rbpacket->pkt, rbpacket->hdr->caplen); 
-  
 }
 
 
@@ -948,7 +986,9 @@ Init_pcaprub()
   
   
   rb_define_method(rb_cPkt, "time", rbpacket_time, 0);
+  rb_define_method(rb_cPkt, "microsec", rbpacket_microsec, 0);
   rb_define_method(rb_cPkt, "length", rbpacket_length, 0);
+  rb_define_method(rb_cPkt, "caplen", rbpacket_caplen, 0);
   rb_define_method(rb_cPkt, "data", rbpacket_data, 0);
   /*
   * Document-method: to_s
