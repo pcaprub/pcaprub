@@ -180,13 +180,13 @@ static VALUE
 rbpacket_new_s(VALUE class)
 {
   VALUE self;
-  rbpacket_t* rbpacket;
+  rbpacket_t *rbpacket;
 
   // need to make destructor do a pcap_close later
-  self = Data_Make_Struct(class, rbpacket_t, 0, rbpacket_free, rbp);
+  self = Data_Make_Struct(class, rbpacket_t, 0, rbpacket_free, rbpacket);
   rb_obj_call_init(self, 0, 0);
 
-  memset(rbp, 0, sizeof(rbpacket_t));
+  memset(rbpacket, 0, sizeof(rbpacket_t));
 
   return self;
 }
@@ -991,10 +991,9 @@ Init_pcaprub()
   rb_define_method(rb_cPcap, "setfilter", rbpcap_setfilter, 1);
   rb_define_method(rb_cPcap, "inject", rbpcap_inject, 1);
   rb_define_method(rb_cPcap, "datalink", rbpcap_datalink, 0);
-  rb_define_method(rb_cPcap, "snapshot", rbpcap_snapshot, 0);
   rb_define_method(rb_cPcap, "pcap_major_version", rbpcap_major_version, 0);
   rb_define_method(rb_cPcap, "pcap_minor_version", rbpcap_minor_version, 0);
-  
+  rb_define_method(rb_cPcap, "snapshot", rbpcap_snapshot, 0);
   /*
   * Document-method: snaplen
   * Alias of snapshot
@@ -1003,6 +1002,7 @@ Init_pcaprub()
   rb_define_method(rb_cPcap, "stats", rbpcap_stats, 0);
   
   rb_define_singleton_method(rb_cPkt, "new", rbpacket_new_s, 0);
+  
   rb_define_method(rb_cPkt, "time", rbpacket_time, 0);
   rb_define_method(rb_cPkt, "microsec", rbpacket_microsec, 0);
   rb_define_method(rb_cPkt, "length", rbpacket_length, 0);
