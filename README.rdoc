@@ -3,9 +3,12 @@
 This goal of this project is to provide a consistent interface 
 to LBL's libpcap packet capture library. This project was created 
 because the currently available ruby-pcap library is poorly designed 
-and has been unmaintained since 2000. This does not provide packet 
-processing functionality, it simply provides the interface for 
-capturing packets. For packet processing capability.
+and has been unmaintained since 2000. 
+
+This does not provide packet processing functionality, it simply provides 
+the interface for capturing packets, and passing yielding those packets. 
+
+For true packet processing capability look at PCAPFU PCAPLET etc..
 
 Requirements:
   libpcap - http://www.tcpdump.org
@@ -38,6 +41,16 @@ The file handling in dumper is now attached to the Capture Class and not the Mod
   capture.dump_open('./Example.pcap') 
     { ... }
   capture.dump_close
+  
+== Timstamps from the PCAP Header 
+
+Timestamps are now available when yeilding packets instead of strings
+
+  capture = PCAPRUB::Pcap.open_live('eth0', SNAPLENGTH, true, 0)
+  capture.each_packet do |packet|
+    puts Time.at(packet.time)
+    puts "micro => #{packet.microsec}"
+  end
     
 === Notes on other repositories
 
@@ -51,7 +64,7 @@ The Outdate RubyForge svn version can be obtained from Subversion: (0.7-dev)
   svn checkout http://pcaprub.rubyforge.org/svn/trunk/
   http download Public Rubyforge (0.6)
 
-SourceForge Masaki Fukushima 2000 (0.6) -- Object Creation Heavy Implementation
+SourceForge Masaki Fukushima 2000 (0.6) -- Object Creation Heavy Implementation (PCAPLET integrated)
   http://sourceforge.net/apps/trac/rubypcap/
   
 Additonal Github Repos

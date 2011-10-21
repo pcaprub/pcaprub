@@ -24,7 +24,7 @@ require 'pp'
 bpffilter = "tcp[13] & 2 != 0"
 
 filename = './telnet-raw.pcap'
-capture = ::Pcap.open_offline(filename)
+capture = PCAPRUB::Pcap.open_offline(filename)
 puts "PCAP.h Version #{capture.pcap_major_version}.#{capture.pcap_minor_version}"
 
 capture.setfilter(bpffilter)

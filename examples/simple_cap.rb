@@ -19,7 +19,7 @@
 require 'rubygems'
 require 'pcaprub'
 
-capture = ::Pcap.open_live('wlan0', 65535, true, 0)
+capture = PCAPRUB::Pcap.open_live('wlan0', 65535, true, 0)
 capture.setfilter('icmp')
 while 1==1
   puts(capture.stats())

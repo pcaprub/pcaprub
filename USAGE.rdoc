@@ -101,20 +101,21 @@ Sniffing and yielding Packet Objects using "each_packet"
   require 'pcaprub'
   SNAPLENGTH = 65535
   capture = PCAPRUB::Pcap.open_live('wlan0', SNAPLENGTH, true, 0)
-  capture.setfilter('icmp')
+  capture.setfilter('port 80')
 
   capture_packets = 10
   capture.each_packet do |packet|
     puts packet.class
     puts Time.at(packet.time)
+    puts "micro => #{packet.microsec}"
     puts "Packet Length => #{packet.length}"
-    puts packet.data.length
+    p packet.data
     
     capture_packets -= 1
     if capture_packets == 0
       break
     end
-  end
+  end  
 
   
 == Using the Packet Dump Capabilities
