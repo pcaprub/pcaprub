@@ -598,10 +598,6 @@ rbpcap_next_packet(VALUE self)
 	TRAP_BEG;
 #endif
 
-  // ret will contain the number of packets captured during the trap (ie one) since this is an iterator.
-	//ret = pcap_dispatch(rbp->pd, 1, (pcap_handler) rbpcap_handler, (u_char *)&job);
-
-  // pcap_dispatch and pcap_next return different data types. pcap_next_ex should be perferred method in future.
   pkt = pcap_next(rbp->pd, &h);
 
 #ifdef MAKE_TRAP
@@ -610,13 +606,8 @@ rbpcap_next_packet(VALUE self)
   
   if(pkt == NULL)
     return Qnil;
-	
-	// Dispatcher type
-	//if(rbp->type == OFFLINE && ret <= 0) 
-	//  return Qnil;
   
-  // Dispatcher type
-  //if(ret > 0 && job.hdr.caplen > 0) {
+  printf("pkt: %s\n", pkt);
   
   pkt2 = ALLOC_N(u_char, h.caplen);
   h2 = ALLOC(struct pcap_pkthdr);
@@ -625,6 +616,9 @@ rbpcap_next_packet(VALUE self)
 	  
 	  memcpy(pkt2, pkt, h.caplen);
     memcpy(h2, &h, sizeof(struct pcap_pkthdr));
+    
+    printf("pkt2: %s\n", pkt2);
+    
     rbpacket = ALLOC(rbpacket_t);
     rbpacket->hdr = h2;
     rbpacket->pkt = pkt2;

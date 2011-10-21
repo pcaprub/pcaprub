@@ -93,6 +93,29 @@ Ethernet or Linux loopback
   if capture.datalink == PCAPRUB::Pcap::DLT_EN10MB
     puts "Ethernet 10MB Link detected"
   end
+
+== Examining Packet Internals
+
+Sniffing and yielding Packet Objects using "each_packet"
+
+  require 'pcaprub'
+  SNAPLENGTH = 65535
+  capture = PCAPRUB::Pcap.open_live('wlan0', SNAPLENGTH, true, 0)
+  capture.setfilter('icmp')
+
+  capture_packets = 10
+  capture.each_packet do |packet|
+    puts packet.class
+    puts Time.at(packet.time)
+    puts "Packet Length => #{packet.length}"
+    puts packet.data.length
+    
+    capture_packets -= 1
+    if capture_packets == 0
+      break
+    end
+  end
+
   
 == Using the Packet Dump Capabilities
 Write to file Example.pcap the first 10 packets on eth0.

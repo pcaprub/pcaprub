@@ -6,6 +6,15 @@ puts("platform is #{RUBY_PLATFORM}")
 
 if /i386-mingw32/ =~ RUBY_PLATFORM
 	
+	unless  have_library("ws2_32" ) and 
+		have_library("iphlpapi") and 
+		have_header("windows.h") and 
+		have_header("winsock2.h") and 
+		have_header("iphlpapi.h")
+			puts "\nNot all dependencies are satisfied for #{RUBY_PLATFORM} platform requirements"
+			exit
+	end
+	
 	pcap_dir        = with_config("pcap-dir", "C:/WpdPack")
   pcap_includedir = with_config("pcap-includedir", pcap_dir + "/include")
   pcap_libdir     = with_config("pcap-libdir", pcap_dir + "/lib")
