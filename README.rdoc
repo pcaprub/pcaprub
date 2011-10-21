@@ -50,6 +50,9 @@ Packetfu Project also provides a listing (0.9-dev)
 The Outdate RubyForge svn version can be obtained from Subversion: (0.7-dev)
   svn checkout http://pcaprub.rubyforge.org/svn/trunk/
   http download Public Rubyforge (0.6)
+
+SourceForge Masaki Fukushima 2000 (0.6) -- Object Creation Heavy Implementation
+  http://sourceforge.net/apps/trac/rubypcap/
   
 Additonal Github Repos
   github.com/dxoigmn/pcaprub (0.8-dev)
