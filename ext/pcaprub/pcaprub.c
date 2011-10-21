@@ -152,7 +152,8 @@ static void rbpacket_free(void *p)
   if(rbpacket->pkt != NULL)
     free(rbpacket->pkt);
   
-  free(rbpacket);
+  if(rbpacket != NULL)
+    free(rbpacket);
 }
 
 /*
