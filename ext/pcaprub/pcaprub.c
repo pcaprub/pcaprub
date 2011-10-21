@@ -831,7 +831,7 @@ rbpacket_data(VALUE self)
     return Qnil;
   
   // return Data_Wrap_Struct(rb_cString, 0, NULL, rbpacket->pkt);  
-  return rb_str_new((char *) rbpacket.pkt, rbpacket.hdr.caplen); 
+  return rb_str_new((char *) rbpacket->pkt, rbpacket->hdr->caplen); 
   
 }
 
