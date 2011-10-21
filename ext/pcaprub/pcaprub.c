@@ -602,7 +602,7 @@ rbpcap_next_packet(VALUE self)
 	//ret = pcap_dispatch(rbp->pd, 1, (pcap_handler) rbpcap_handler, (u_char *)&job);
 
   // pcap_dispatch and pcap_next return different data types. pcap_next_ex should be perferred method in future.
-  pkt = pcap_next(rbp, &h);
+  pkt = pcap_next(rbp->pd, &h);
 
 #ifdef MAKE_TRAP
 	TRAP_END;
