@@ -596,7 +596,6 @@ rbpcap_next_packet(VALUE self)
   
   // int pcap_next_ex (pcap_t *p, struct pcap_pkthdr **pkt_header, const u_char **pkt_data);	
 	// int pcap_dispatch(pcap_t *p, int cnt, pcap_handler callback, u_char *user);
-	
 	// ret will contain the number of packets captured during the trap (ie one) since this is an iterator.
 	
 	ret = pcap_dispatch(rbp->pd, 1, (pcap_handler) rbpcap_handler, (u_char *)&job);
@@ -612,12 +611,7 @@ rbpcap_next_packet(VALUE self)
     {
       rbpacket = ALLOC(rbpacket_t);
       rbpacket->hdr = &job.hdr;
-      
-      printf("pkt caplen: %d\n", job.hdr.caplen);
-      printf("pkt len: %d\n", job.hdr.len);
-      printf("pkt data: %s\n", (unsigned char *)job.pkt);
-      
-      rbpacket->pkt = &job.pkt;
+      rbpacket->pkt = (u_char *)&job.pkt;
       return Data_Wrap_Struct(rb_cPkt, 0, rbpacket_free, rbpacket);
     
     }
@@ -831,12 +825,14 @@ rbpacket_data(VALUE self)
   rbpacket_t* rbpacket;
   Data_Get_Struct(self, rbpacket_t, rbpacket);
   
-  printf("pkt data: %s\n", rbpacket->pkt);
+  //printf("pkt data: %s\n", rbpacket->pkt);
   
   if(rbpacket->pkt == NULL)
     return Qnil;
-    
-  return Data_Wrap_Struct(rb_cString, 0, NULL, rbpacket->pkt);
+  
+  // return Data_Wrap_Struct(rb_cString, 0, NULL, rbpacket->pkt);  
+  return rb_str_new((char *) rbpacket.pkt, rbpacket.hdr.caplen); 
+  
 }
 
 
