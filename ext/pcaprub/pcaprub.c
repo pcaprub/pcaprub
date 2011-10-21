@@ -13,9 +13,9 @@
  #include <sys/time.h>
 #endif
 
-
-static VALUE rb_cPcap;
-static VALUE mPCAP, ePCAPRUBError, eDumperError, eBindingError, eBPFilterError;
+static VALUE mPCAP;
+static VALUE rb_cPcap, rb_cPkt;
+static VALUE ePCAPRUBError, eDumperError, eBindingError, eBPFilterError;
 
 // Now defined in Native Ruby
 // #define PCAPRUB_VERSION "*.*.*"
