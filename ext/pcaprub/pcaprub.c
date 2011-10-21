@@ -629,7 +629,7 @@ rbpcap_next_packet(VALUE self)
     rbpacket->hdr = h2;
     rbpacket->pkt = pkt2;
 	    
-	  tdata = Data_Wrap_Struct(cPkt, 0, rbpacket_free, rbpacket);
+	  tdata = Data_Wrap_Struct(rb_cPkt, 0, rbpacket_free, rbpacket);
     return tdata;
     //return rb_str_new((char *) job.pkt, job.hdr.caplen);
   }
