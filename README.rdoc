@@ -14,19 +14,30 @@ Requirements:
 
   gem install pcaprub  
 
-
 == Usage
 
  require 'rubygems'
  require 'pcaprub'
  
- cap = Pcap.new
+ cap = PCAPRUB::Pcap.new
 
 == Current Repository for Gemcutter source
 
 The Git Repo on Github @shadowbq is forked from the Metasploit SVN repo
   git clone git://github.com/shadowbq/pcaprub.git
 
+== Notes on 11.x series and beyond.
+
+The gem is now a module. The module is autoincluded, but this helps with name collisions and additional growth.
+
+Some of the Error handling and basic intensive code is moving out the C base-extension (ext) and into native Ruby.
+
+The file handling in dumper is now attached to the Capture Class and not the Module as an additional singleton.
+
+  capture = PCAPRUB::Pcap.open_live('eth0', SNAPLENGTH, true, 0)
+  capture.dump_open('./Example.pcap') 
+    { ... }
+  capture.dump_close
     
 === Notes on other repositories
 

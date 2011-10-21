@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'rake'
 require 'rake/clean'
+require './lib/pcaprub/version'
 
 desc "Build the extension:"
 task :compile => %W[ext/pcaprub/Makefile ext/pcaprub/pcaprub.c]
@@ -43,8 +44,8 @@ rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
 end
 
-require 'rake/gempackagetask'
-Rake::GemPackageTask.new($gemspec) do |package|
+require "rubygems/package_task"
+Gem::PackageTask.new($gemspec) do |package|
   package.need_zip = false
   package.need_tar = false
 end
@@ -74,10 +75,10 @@ task :test => :check_dependencies
 
 task :default => %w[clean compile test]
 
-require 'rake/rdoctask'
-Rake::RDocTask.new do |rdoc|
-  version = File.exist?('VERSION') ? File.read('VERSION') : ""
-
+require 'rdoc/task'
+RDoc::Task.new do |rdoc|
+  
+  version = PCAPRUB::VERSION::STRING
   rdoc.rdoc_dir = 'rdoc'
   rdoc.title = "pcaprub #{version}"
   rdoc.rdoc_files.include('README*')
