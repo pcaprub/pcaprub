@@ -11,12 +11,21 @@ Many of the methods require the Pcap instance to be "ready".
   require "rubygems"
   require "pcaprub"
 
-  mypcap = Pcap.new  
+  mypcap = PCAPRUB::Pcap.new  
+  
+== Backwards Compatibility
+
+Pcaprub is included automatically upon load. This mixes in ::Pcap for backwards compatibility.
+
+  require "rubygems"
+  require "pcaprub"
+
+  mypcap = ::Pcap.new  
 
 
 == Setting up a live Capture
 
-  dev = ::Pcap.lookupdev
+  dev = PCAPRUB::Pcap.lookupdev
 
   snaplength = 65535
   promiscous_mode = true 
@@ -81,6 +90,51 @@ Sniffing a set number of packets and also letting the user Interrupt Early
 == Examining the DataLink
 
 Ethernet or Linux loopback
-  if capture.datalink == Pcap::DLT_EN10MB
+  if capture.datalink == PCAPRUB::Pcap::DLT_EN10MB
     puts "Ethernet 10MB Link detected"
   end
+
+== Examining Packet Internals
+
+Sniffing and yielding Packet Objects using "each_packet"
+
+  require 'pcaprub'
+  SNAPLENGTH = 65535
+  capture = PCAPRUB::Pcap.open_live('wlan0', SNAPLENGTH, true, 0)
+  capture.setfilter('port 80')
+
+  capture_packets = 10
+  capture.each_packet do |packet|
+    puts packet.class
+    puts Time.at(packet.time)
+    puts "micro => #{packet.microsec}"
+    puts "Packet Length => #{packet.length}"
+    p packet.data
+    
+    capture_packets -= 1
+    if capture_packets == 0
+      break
+    end
+  end  
+
+  
+== Using the Packet Dump Capabilities
+Write to file Example.pcap the first 10 packets on eth0.
+
+  require 'pcaprub'
+  SNAPLENGTH = 65535
+  capture = PCAPRUB::Pcap.open_live('eth0', SNAPLENGTH, true, 0)
+  dumper = capture.dump_open('./Example.pcap')
+
+  capture_packets = 10
+  capture.each do |packet|
+    capture.dump(packet.length, packet.length, packet)
+    capture_packets -= 1
+    if capture_packets == 0
+      break
+    end
+  end
+  
+  capture.dump_close
+  
+    
