@@ -174,6 +174,24 @@ rbpcap_new_s(VALUE class)
 }
 
 /*
+* Creates a new Packet instance and returns the object itself.
+*/
+static VALUE
+rbpacket_new_s(VALUE class)
+{
+  VALUE self;
+  rbpacket_t* rbpacket;
+
+  // need to make destructor do a pcap_close later
+  self = Data_Make_Struct(class, rbpacket_t, 0, rbpacket_free, rbp);
+  rb_obj_call_init(self, 0, 0);
+
+  memset(rbp, 0, sizeof(rbpacket_t));
+
+  return self;
+}
+
+/*
 * call-seq:
 *   setfilter(filter)
 *
@@ -984,7 +1002,7 @@ Init_pcaprub()
   rb_define_method(rb_cPcap, "snaplen", rbpcap_snapshot, 0);
   rb_define_method(rb_cPcap, "stats", rbpcap_stats, 0);
   
-  
+  rb_define_singleton_method(rb_cPkt, "new", rbpacket_new_s, 0);
   rb_define_method(rb_cPkt, "time", rbpacket_time, 0);
   rb_define_method(rb_cPkt, "microsec", rbpacket_microsec, 0);
   rb_define_method(rb_cPkt, "length", rbpacket_length, 0);
