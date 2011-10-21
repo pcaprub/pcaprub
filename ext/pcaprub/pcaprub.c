@@ -612,7 +612,9 @@ rbpcap_next_packet(VALUE self)
     {
       rbpacket = ALLOC(rbpacket_t);
       rbpacket->hdr = &job.hdr;
-      rbpacket->pkt = rb_str_new((char *) job.pkt, job.hdr.caplen);
+      printf("pkt caplen: %d\n", job.hdr.caplen);
+      printf("pkt pktlen: %d\n", job.hdr.pktlen);
+      rbpacket->pkt = rb_str_new(unsigned char *)job.pkt, job.hdr.caplen);
       return Data_Wrap_Struct(rb_cPkt, 0, rbpacket_free, rbpacket);
     
     }
