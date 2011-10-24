@@ -32,6 +32,7 @@ begin
     gem.authors = ["shadowbq"]
     gem.extensions = FileList['ext/**/extconf.rb']
     gem.rubyforge_project   = 'pcaprub'
+    gem.version = PCAPRUB::VERSION::STRING
     gem.files.include('lib/pcaprub.*') # add native stuff
     gem.extra_rdoc_files = FileList['README*', 'ChangeLog*', 'LICENSE*', 'FAQ*', 'USAGE*', 'ext/**/*.c']
   end
