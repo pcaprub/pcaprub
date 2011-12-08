@@ -223,8 +223,11 @@ rbpcap_setfilter(VALUE self, VALUE filter)
 	if(! rbpcap_ready(rbp)) return self; 
 	
   if(rbp->type == LIVE)
-  	if(pcap_lookupnet(rbp->iface, &netid, &mask, eb) < 0)
-  		rb_raise(rb_eRuntimeError, "%s", eb);
+  	if(pcap_lookupnet(rbp->iface, &netid, &mask, eb) < 0) {
+  		netid = 0;
+  		mask = 0;
+  		rb_warn(eb);
+  	}
 
   if(pcap_compile(rbp->pd, &bpf, RSTRING_PTR(filter), 0, mask) < 0)
   	rb_raise(eBPFilterError, "invalid bpf filter");
