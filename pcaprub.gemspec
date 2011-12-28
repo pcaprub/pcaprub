@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "pcaprub"
-  s.version = "0.11.0"
+  s.version = "0.11.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["shadowbq"]
-  s.date = "2011-10-21"
+  s.date = "2011-12-28"
   s.description = "libpcap bindings for ruby compat with JRUBY Ruby1.8 Ruby1.9"
   s.email = "shadowbq@gmail.com"
   s.extensions = ["ext/pcaprub/extconf.rb"]
@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
     "LICENSE",
     "README.rdoc",
     "USAGE.rdoc",
+    "ext/pcaprub/dlt.c",
     "ext/pcaprub/pcaprub.c"
   ]
   s.files = [
@@ -27,11 +28,11 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "USAGE.rdoc",
-    "VERSION",
     "examples/dead_cap.rb",
     "examples/file_cap.rb",
     "examples/simple_cap.rb",
     "examples/telnet-raw.pcap",
+    "ext/pcaprub/dlt.c",
     "ext/pcaprub/extconf.rb",
     "ext/pcaprub/pcaprub.c",
     "lib/pcaprub.rb",
@@ -39,6 +40,8 @@ Gem::Specification.new do |s|
     "lib/pcaprub/ext.rb",
     "lib/pcaprub/version.rb",
     "pcaprub.gemspec",
+    "pkg/pcaprub-0.10.0.gem",
+    "pkg/pcaprub-0.9.2.gem",
     "test/helper.rb",
     "test/test_pcaprub.rb",
     "test/test_pcaprub_unit.rb"
