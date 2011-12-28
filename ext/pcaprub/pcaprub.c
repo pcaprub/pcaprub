@@ -23,6 +23,14 @@ static VALUE ePCAPRUBError, eDumperError, eBindingError, eBPFilterError;
 #define OFFLINE 1
 #define LIVE 2
 
+#if !defined(PCAP_NETMASK_UNKNOWN)
+/*
+* Version of libpcap < 1.1 
+* Value to pass to pcap_compile() as the netmask if you dont know what the netmask is. 
+*/
+#define PCAP_NETMASK_UNKNOWN  0xffffffff
+#endif
+
 typedef struct rbpcap {
   pcap_t *pd;
   pcap_dumper_t *pdt;
