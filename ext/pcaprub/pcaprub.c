@@ -234,7 +234,7 @@ rbpcap_setfilter(VALUE self, VALUE filter)
   	if(pcap_lookupnet(rbp->iface, &netid, &mask, eb) < 0) {
   		netid = 0;
   		mask = 0;
-  		rb_warn(eb);
+  		rb_warn("unable to get IP: %s", eb);
   	}
 
   if(pcap_compile(rbp->pd, &bpf, RSTRING_PTR(filter), 0, mask) < 0)
