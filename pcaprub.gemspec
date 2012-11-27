@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "pcaprub"
-  s.version = "0.11.2"
+  s.version = "0.11.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["shadowbq"]
-  s.date = "2012-01-05"
+  s.date = "2012-11-27"
   s.description = "libpcap bindings for ruby compat with JRUBY Ruby1.8 Ruby1.9"
   s.email = "shadowbq@gmail.com"
   s.extensions = ["ext/pcaprub/extconf.rb"]
@@ -45,7 +45,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/shadowbq/pcaprub"
   s.require_paths = ["lib"]
   s.rubyforge_project = "pcaprub"
-  s.rubygems_version = "1.8.11"
+  s.rubygems_version = "1.8.24"
   s.summary = "libpcap bindings for ruby"
 
   if s.respond_to? :specification_version then
