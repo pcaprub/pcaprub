@@ -42,7 +42,7 @@ class Pcap::UnitTest < Test::Unit::TestCase
 		rescue ::Exception => e
 		end
 		
-		assert_equal(e.class, ArgumentError)
+		assert_equal(e.class, PCAPRUB::PCAPRUBError)
 	end
 
 	def test_pcap_setfilter
