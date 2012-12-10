@@ -882,6 +882,14 @@ rbpacket_caplen(VALUE self)
 {
   rbpacket_t* rbpacket;
   Data_Get_Struct(self, rbpacket_t, rbpacket);
+
+  if (rbpacket->hdr == NULL)
+    return Qnil;
+
+  //test incorrect case
+  if (rbpacket->hdr->caplen > rbpacket->hdr->len)
+    return INT2NUM(rbpacket->hdr->len);
+
   return INT2NUM(rbpacket->hdr->caplen);
 }
 
@@ -895,10 +903,10 @@ rbpacket_data(VALUE self)
 {
   rbpacket_t* rbpacket;
   Data_Get_Struct(self, rbpacket_t, rbpacket);
-  
-  if(rbpacket->pkt == NULL)
+
+  if ((rbpacket->pkt == NULL) || (rbpacket->hdr == NULL) || (rbpacket->hdr->caplen > rbpacket->hdr->len))
     return Qnil;
-  
+
   return rb_str_new((char *) rbpacket->pkt, rbpacket->hdr->caplen); 
 }
 
