@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["shadowbq"]
-  s.date = "2012-11-27"
+  s.date = "2013-04-22"
   s.description = "libpcap bindings for ruby compat with JRUBY Ruby1.8 Ruby1.9"
   s.email = "shadowbq@gmail.com"
   s.extensions = ["ext/pcaprub/extconf.rb"]
@@ -22,7 +22,10 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     ".document",
+    ".travis.yml",
     "FAQ.rdoc",
+    "Gemfile",
+    "Gemfile.lock",
     "LICENSE",
     "README.rdoc",
     "Rakefile",
@@ -33,6 +36,7 @@ Gem::Specification.new do |s|
     "examples/telnet-raw.pcap",
     "ext/pcaprub/extconf.rb",
     "ext/pcaprub/pcaprub.c",
+    "lib/pcaprub.bundle",
     "lib/pcaprub.rb",
     "lib/pcaprub/common.rb",
     "lib/pcaprub/ext.rb",
@@ -52,9 +56,24 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<pcaprub>, [">= 0"])
+      s.add_development_dependency(%q<jeweler>, [">= 0"])
+      s.add_development_dependency(%q<shoulda>, [">= 0"])
+      s.add_runtime_dependency(%q<rake>, [">= 0"])
+      s.add_runtime_dependency(%q<rake-compiler>, [">= 0"])
     else
+      s.add_dependency(%q<pcaprub>, [">= 0"])
+      s.add_dependency(%q<jeweler>, [">= 0"])
+      s.add_dependency(%q<shoulda>, [">= 0"])
+      s.add_dependency(%q<rake>, [">= 0"])
+      s.add_dependency(%q<rake-compiler>, [">= 0"])
     end
   else
+    s.add_dependency(%q<pcaprub>, [">= 0"])
+    s.add_dependency(%q<jeweler>, [">= 0"])
+    s.add_dependency(%q<shoulda>, [">= 0"])
+    s.add_dependency(%q<rake>, [">= 0"])
+    s.add_dependency(%q<rake-compiler>, [">= 0"])
   end
 end
 

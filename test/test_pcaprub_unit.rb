@@ -11,7 +11,6 @@ require 'pcaprub'
 #
 
 class Pcap::UnitTest < Test::Unit::TestCase
-
 	def test_version
 		assert_equal(String, Pcap.version.class)
 		puts "Pcaprub version: #{Pcap.version}"
@@ -56,7 +55,13 @@ class Pcap::UnitTest < Test::Unit::TestCase
 		d = Pcap.lookupdev
 		o = Pcap.open_live(d, 65535, true, 1)
 		r = o.inject("X" * 512)
-		assert_equal(512, r)
+		
+		# Travis CI's virtual interface does note support injection.
+		if ENV['CI']
+			assert_equal(-1,r)
+		else
+			assert_equal(512, r)
+		end
 	end
 
 	def test_pcap_datalink

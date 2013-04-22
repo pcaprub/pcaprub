@@ -34,6 +34,10 @@ begin
     gem.rubyforge_project   = 'pcaprub'
     gem.version = PCAPRUB::VERSION::STRING
     gem.files.include('lib/pcaprub.*') # add native stuff
+    gem.add_development_dependency("jeweler")
+    gem.add_development_dependency("shoulda")
+    gem.add_dependency("rake")
+    gem.add_dependency("rake-compiler")
     gem.extra_rdoc_files = FileList['README*', 'ChangeLog*', 'LICENSE*', 'FAQ*', 'USAGE*', 'ext/**/*.c']
   end
   
@@ -72,7 +76,7 @@ rescue LoadError
   end
 end
 
-task :test => :check_dependencies
+task :test
 
 task :default => %w[clean compile test]
 
