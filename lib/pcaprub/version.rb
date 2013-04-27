@@ -3,8 +3,8 @@ module PCAPRUB #:nodoc:
   module VERSION #:nodoc:
     
     MAJOR = 0
-    MINOR = 11
-    TINY = 3 
+    MINOR = 12
+    TINY = 0
 
     STRING = [MAJOR, MINOR, TINY].join('.')
     
