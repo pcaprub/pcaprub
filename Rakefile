@@ -1,25 +1,7 @@
 require 'rubygems'
 require 'rake'
-require 'rake/clean'
+require 'rake/extensiontask'
 require './lib/pcaprub/version'
-
-desc "Build the extension:"
-task :compile => %W[ext/pcaprub/Makefile ext/pcaprub/pcaprub.c]
-
-
-file "ext/pcaprub/Makefile" => ["ext/pcaprub/extconf.rb"] do
-  Dir.chdir("ext/pcaprub") do 
-    ruby "extconf.rb"
-    sh "make"
-  end
-  cp "ext/pcaprub/pcaprub.so", "lib"  
-end
-
-CLEAN.include 'ext/**/Makefile'
-CLEAN.include 'ext/**/*.o'
-CLEAN.include 'ext/**/mkmf.log'
-CLEAN.include 'ext/**/*.so'
-CLEAN.include 'lib/**/*.so'
 
 begin
   require 'jeweler'
@@ -30,7 +12,7 @@ begin
     gem.email = "shadowbq@gmail.com"
     gem.homepage = "http://github.com/shadowbq/pcaprub"
     gem.authors = ["shadowbq"]
-    gem.extensions = FileList['ext/**/extconf.rb']
+    gem.extensions = ['ext/pcaprub/extconf.rb']
     gem.rubyforge_project   = 'pcaprub'
     gem.version = PCAPRUB::VERSION::STRING
     gem.files.include('lib/pcaprub.*') # add native stuff
@@ -40,14 +22,16 @@ begin
     gem.add_dependency("rake-compiler")
     gem.extra_rdoc_files = FileList['README*', 'ChangeLog*', 'LICENSE*', 'FAQ*', 'USAGE*', 'ext/**/*.c']
   end
-  
+
   $gemspec          = jeweler_tasks.gemspec
   $gemspec.version  = jeweler_tasks.jeweler.version
-  
+
   Jeweler::GemcutterTasks.new
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
 end
+
+Rake::ExtensionTask.new("pcaprub", $gemspec)
 
 require "rubygems/package_task"
 Gem::PackageTask.new($gemspec) do |package|
@@ -82,7 +66,6 @@ task :default => %w[clean compile test]
 
 require 'rdoc/task'
 RDoc::Task.new do |rdoc|
-  
   version = PCAPRUB::VERSION::STRING
   rdoc.rdoc_dir = 'rdoc'
   rdoc.title = "pcaprub #{version}"
