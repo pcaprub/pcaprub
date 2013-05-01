@@ -1,5 +1,8 @@
 = pcaprub
 
+{<img src="https://travis-ci.org/kevinmahaffey/pcaprub.png" />}[https://travis-ci.org/kevinmahaffey/pcaprub]
+
+
 This goal of this project is to provide a consistent interface 
 to LBL's libpcap packet capture library. This project was created 
 because the currently available ruby-pcap library is poorly designed 

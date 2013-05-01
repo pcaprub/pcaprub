@@ -130,7 +130,6 @@ static int rbpcap_ready(rbpcap_t *rbp) {
 }
 
 
-
 /*
 * Automated Garbage Collection for Pcap Class
 */
@@ -199,6 +198,114 @@ rbpacket_new_s(VALUE class)
   return self;
 }
 
+
+/*
+* call-seq:
+*   setmonitor(true)
+*
+* Set monitor mode for the capture.
+*
+* Returns the object itself.
+*/
+static VALUE
+rbpcap_setmonitor(VALUE self, VALUE mode)
+{
+  rbpcap_t *rbp;
+  Data_Get_Struct(self, rbpcap_t, rbp);
+  int rfmon_mode = 0;
+  if (mode == Qtrue) {
+    rfmon_mode = 1;
+  } else if (mode == Qfalse) {
+    rfmon_mode = 0;
+  } else {
+    rb_raise(rb_eArgError, "Monitor mode must be a boolean");
+  }
+
+  if (pcap_set_rfmon(rbp->pd, rfmon_mode) == 0) {
+    return self;
+  } else {
+    rb_raise(ePCAPRUBError, "unable to set monitor mode");
+  }
+}
+
+/*
+* call-seq:
+*   settimeout(1234)
+*
+* Set timeout for the capture.
+*
+* Returns the object itself.
+*/
+static VALUE
+rbpcap_settimeout(VALUE self, VALUE timeout)
+{
+  rbpcap_t *rbp;
+  Data_Get_Struct(self, rbpcap_t, rbp);
+
+  if(TYPE(timeout) != T_FIXNUM)
+    rb_raise(rb_eArgError, "timeout must be a fixnum");
+
+  if (pcap_set_timeout(rbp->pd, NUM2INT(timeout)) == 0) {
+    return self;
+  } else {
+    rb_raise(ePCAPRUBError, "unable to set timeout");
+  }
+}
+
+
+/*
+* call-seq:
+*   setsnaplen(true)
+*
+* Set snap length for the capture.
+*
+* Returns the object itself.
+*/
+static VALUE
+rbpcap_setsnaplen(VALUE self, VALUE snaplen)
+{
+  rbpcap_t *rbp;
+  Data_Get_Struct(self, rbpcap_t, rbp);
+
+  if(TYPE(snaplen) != T_FIXNUM)
+    rb_raise(rb_eArgError, "snaplen must be a fixnum");
+  
+  if (pcap_set_snaplen(rbp->pd, NUM2INT(snaplen)) == 0) {
+    return self;
+  } else {
+    rb_raise(ePCAPRUBError, "unable to set snap length");
+  }
+}
+
+/*
+* call-seq:
+*   setpromisc(true)
+*
+* Set promiscuous mode for the capture.
+*
+* Returns the object itself.
+*/
+static VALUE
+rbpcap_setpromisc(VALUE self, VALUE mode)
+{
+  rbpcap_t *rbp;
+  Data_Get_Struct(self, rbpcap_t, rbp);
+  int promisc_mode = 0;
+  if (mode == Qtrue) {
+    promisc_mode = 1;
+  } else if (mode == Qfalse) {
+    promisc_mode = 0;
+  } else {
+    rb_raise(rb_eArgError, "Promisc mode must be a boolean");
+  }
+
+  if (pcap_set_promisc(rbp->pd, promisc_mode) == 0) {
+    return self;
+  } else {
+    rb_raise(ePCAPRUBError, "unable to set promiscuous mode");
+  }
+}
+
 /*
 * call-seq:
 *   setfilter(filter)
@@ -245,6 +352,93 @@ rbpcap_setfilter(VALUE self, VALUE filter)
 
   return self;
 }
+
+/*
+* Activate the interface
+*
+* call-seq:
+*   activate() -> self
+*
+* Returns the object itself.
+*/
+static VALUE
+rbpcap_activate(VALUE self)
+{
+  rbpcap_t *rbp;
+  int errcode;
+  Data_Get_Struct(self, rbpcap_t, rbp);
+  
+  if ((errcode = pcap_activate(rbp->pd)) == 0) {
+    return self;
+  } else {
+    rb_raise(ePCAPRUBError, "unable to activate interface: %d, %s", errcode, rbp->iface);
+  }
+}
+
+
+/*
+* Close the interface
+*
+* call-seq:
+*   activate() -> self
+*
+* Returns the object itself.
+*/
+static VALUE
+rbpcap_close(VALUE self)
+{
+  rbpcap_t *rbp;
+  Data_Get_Struct(self, rbpcap_t, rbp);
+  
+  pcap_close(rbp->pd);
+  rbp->pd = NULL;
+  return self;
+}
+
+static VALUE
+rbpcap_create(VALUE self, VALUE iface)
+{
+  rbpcap_t *rbp;
+  char eb[PCAP_ERRBUF_SIZE];
+
+  Data_Get_Struct(self, rbpcap_t, rbp);
+
+  rbp->type = LIVE;
+  memset(rbp->iface, 0, sizeof(rbp->iface));
+  strncpy(rbp->iface, RSTRING_PTR(iface), sizeof(rbp->iface) - 1);
+
+  if(rbp->pd) {
+    pcap_close(rbp->pd);  
+  }
+
+  rbp->pd = pcap_create(
+    RSTRING_PTR(iface),
+    eb
+  );
+
+  if(!rbp->pd)
+    rb_raise(rb_eRuntimeError, "%s", eb);
+
+  return self;
+}
+
+/*
+* 
+* call-seq:
+*   create(iface) -> self
+*
+*   capture = ::Pcap.create(@dev)
+*
+* Returns the object itself.  
+*/
+static VALUE
+rbpcap_create_s(VALUE class, VALUE iface)
+{
+  VALUE iPcap = rb_funcall(rb_cPcap, rb_intern("new"), 0);
+  return rbpcap_create(iPcap, iface);
+}
+
+
 
 // transparent method
 static VALUE
@@ -985,7 +1179,7 @@ Init_pcaprub()
 
 
   rb_define_singleton_method(rb_cPcap, "new", rbpcap_new_s, 0);
-
+  rb_define_singleton_method(rb_cPcap, "create", rbpcap_create_s, 1);
   rb_define_singleton_method(rb_cPcap, "open_live", rbpcap_open_live_s, 4);
   rb_define_singleton_method(rb_cPcap, "open_offline", rbpcap_open_offline_s, 1);
   rb_define_singleton_method(rb_cPcap, "open_dead", rbpcap_open_dead_s, 2);
@@ -997,6 +1191,7 @@ Init_pcaprub()
   rb_define_method(rb_cPcap, "next_data", rbpcap_next_data, 0);
   rb_define_method(rb_cPcap, "each_packet", rbpcap_each_packet, 0);
   rb_define_method(rb_cPcap, "next_packet", rbpcap_next_packet, 0);
+
   /*
   * Document-method: each
   * Alias of each_data
@@ -1006,13 +1201,21 @@ Init_pcaprub()
   * Document-method: next
   * Alias of next_data
   */
+
   rb_define_method(rb_cPcap, "next", rbpcap_next_data, 0);
   rb_define_method(rb_cPcap, "setfilter", rbpcap_setfilter, 1);
+  rb_define_method(rb_cPcap, "setmonitor", rbpcap_setmonitor, 1);
+  rb_define_method(rb_cPcap, "setsnaplen", rbpcap_setsnaplen, 1);
+  rb_define_method(rb_cPcap, "settimeout", rbpcap_settimeout, 1);
+  rb_define_method(rb_cPcap, "setpromisc", rbpcap_setpromisc, 1);
+  rb_define_method(rb_cPcap, "activate", rbpcap_activate, 0);
   rb_define_method(rb_cPcap, "inject", rbpcap_inject, 1);
   rb_define_method(rb_cPcap, "datalink", rbpcap_datalink, 0);
   rb_define_method(rb_cPcap, "pcap_major_version", rbpcap_major_version, 0);
   rb_define_method(rb_cPcap, "pcap_minor_version", rbpcap_minor_version, 0);
   rb_define_method(rb_cPcap, "snapshot", rbpcap_snapshot, 0);
+  rb_define_method(rb_cPcap, "close", rbpcap_close, 0);
+
   /*
   * Document-method: snaplen
   * Alias of snapshot

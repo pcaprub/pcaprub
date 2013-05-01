@@ -21,3 +21,5 @@ pkg
 ## PROJECT::SPECIFIC
 Makefile
 mkmf.log
+tmp
+lib/pcaprub.bundle
