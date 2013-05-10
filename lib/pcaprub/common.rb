@@ -13,5 +13,8 @@ module PCAPRUB
   # deep.
   class DumperError < PCAPRUBError; end
 
+  # Raised if unable to set underlying capture link type
+  class LinkTypeError < PCAPRUBError; end
+
 end
 

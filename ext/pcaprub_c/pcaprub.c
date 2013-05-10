@@ -18,7 +18,7 @@
 
 static VALUE mPCAP;
 static VALUE rb_cPcap, rb_cPkt;
-static VALUE ePCAPRUBError, eDumperError, eBindingError, eBPFilterError;
+static VALUE ePCAPRUBError, eDumperError, eBindingError, eBPFilterError, eLinkTypeError;
 
 #if defined(WIN32)
 static VALUE rbpcap_thread_wait_handle(HANDLE fno);
@@ -260,6 +260,72 @@ rbpcap_settimeout(VALUE self, VALUE timeout)
   }
 }
 
+/*
+* call-seq:
+*   listdatalinks()
+*
+* Get supported datalinks for this interface
+*
+* Returns an array of supported datalinks.
+*/
+static VALUE
+rbpcap_listdatalinks(VALUE self)
+{
+  rbpcap_t *rbp;
+  int *links, numlinks;
+  Data_Get_Struct(self, rbpcap_t, rbp);
+
+  numlinks = pcap_list_datalinks(rbp->pd, &links);
+  if (numlinks > 0) {
+    VALUE hash = rb_hash_new();
+    for (int i = 0; i < numlinks; i++) {
+      const char *name = pcap_datalink_val_to_name(links[i]);
+      if (name != NULL) {
+        VALUE namestring = rb_str_new2(name);
+        rb_hash_aset(hash, INT2NUM(links[i]), namestring);
+      }
+    }
+    pcap_free_datalinks(links);
+    return hash;
+  } else {
+    rb_raise(eLinkTypeError, "unable to get datalinks (%d): %s", numlinks, pcap_geterr(rbp->pd));
+  }
+}
+
+
+/*
+* call-seq:
+*   setdatalink(1234)
+*
+* Set datalink type for the capture.
+*
+* Returns the object itself.
+*/
+static VALUE
+rbpcap_setdatalink(VALUE self, VALUE datalink)
+{
+  rbpcap_t *rbp;
+  int linktype, errcode;
+  Data_Get_Struct(self, rbpcap_t, rbp);
+
+  if(TYPE(datalink) == T_FIXNUM ) {
+    linktype = NUM2INT(datalink);
+  } else if (TYPE(datalink) == T_STRING) {
+    linktype = pcap_datalink_name_to_val(RSTRING_PTR(datalink));
+    if (linktype < 0) {
+      rb_raise(eLinkTypeError, "invalid datalink name: %s", RSTRING_PTR(datalink));
+    }
+  } else {
+    rb_raise(rb_eArgError, "datalink type must be a string or fixnum");
+  }
+
+  errcode = pcap_set_datalink(rbp->pd, linktype);
+  if (errcode == 0) {
+    return self;
+  } else {
+    rb_raise(eLinkTypeError, "unable to set datalink (%d): %s", errcode, pcap_geterr(rbp->pd));
+  }
+}
 
 /*
 * call-seq:
@@ -1177,6 +1243,7 @@ Init_pcaprub_c()
   eBindingError = rb_path2class("PCAPRUB::BindingError");
   eBPFilterError = rb_path2class("PCAPRUB::BPFError");
   eDumperError = rb_path2class("PCAPRUB::DumperError");
+  eLinkTypeError = rb_path2class("PCAPRUB::LinkTypeError");
 
   rb_define_module_function(rb_cPcap, "lookupdev", rbpcap_s_lookupdev, 0);
   rb_define_module_function(rb_cPcap, "lookupnet", rbpcap_s_lookupnet, 1);
@@ -1263,6 +1330,8 @@ Init_pcaprub_c()
   rb_define_method(rb_cPcap, "setsnaplen", rbpcap_setsnaplen, 1);
   rb_define_method(rb_cPcap, "settimeout", rbpcap_settimeout, 1);
   rb_define_method(rb_cPcap, "setpromisc", rbpcap_setpromisc, 1);
+  rb_define_method(rb_cPcap, "setdatalink", rbpcap_setdatalink, 1);
+  rb_define_method(rb_cPcap, "listdatalinks", rbpcap_listdatalinks, 0);
   rb_define_method(rb_cPcap, "activate", rbpcap_activate, 0);
   rb_define_method(rb_cPcap, "inject", rbpcap_inject, 1);
   rb_define_method(rb_cPcap, "datalink", rbpcap_datalink, 0);
