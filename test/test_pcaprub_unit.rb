@@ -114,6 +114,7 @@ class Pcap::UnitTest < Test::Unit::TestCase
   end
 
   def test_monitor
+    return if RUBY_PLATFORM =~ /mingw|win/
     d = Pcap.lookupdev
     o = Pcap.create(d)
     assert_equal(o, o.setmonitor(true))

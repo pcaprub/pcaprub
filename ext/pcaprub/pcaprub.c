@@ -221,11 +221,16 @@ rbpcap_setmonitor(VALUE self, VALUE mode)
     rb_raise(rb_eArgError, "Monitor mode must be a boolean");
   }
 
+#if defined(WIN32)
+  // monitor mode support was disabled in WinPcap 4.0.2
+  rb_raise(ePCAPRUBError, "set monitor mode not supported in WinPcap");
+#else
   if (pcap_set_rfmon(rbp->pd, rfmon_mode) == 0) {
     return self;
   } else {
     rb_raise(ePCAPRUBError, "unable to set monitor mode");
   }
+#endif
 }
 
 /*
