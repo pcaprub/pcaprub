@@ -6,6 +6,9 @@
 
 
 #include <pcap.h>
+#if defined(WIN32)
+#include <Win32-Extensions.h>
+#endif
 
 #if !defined(WIN32)
  #include <netinet/in.h>
@@ -16,6 +19,10 @@
 static VALUE mPCAP;
 static VALUE rb_cPcap, rb_cPkt;
 static VALUE ePCAPRUBError, eDumperError, eBindingError, eBPFilterError;
+
+#if defined(WIN32)
+static VALUE rbpcap_thread_wait_handle(HANDLE fno);
+#endif
 
 // Now defined in Native Ruby
 // #define PCAPRUB_VERSION "*.*.*"
@@ -221,11 +228,16 @@ rbpcap_setmonitor(VALUE self, VALUE mode)
     rb_raise(rb_eArgError, "Monitor mode must be a boolean");
   }
 
+#if defined(WIN32)
+  // monitor mode support was disabled in WinPcap 4.0.2
+  rb_raise(ePCAPRUBError, "set monitor mode not supported in WinPcap");
+#else
   if (pcap_set_rfmon(rbp->pd, rfmon_mode) == 0) {
     return self;
   } else {
     rb_raise(ePCAPRUBError, "unable to set monitor mode");
   }
+#endif
 }
 
 /*
@@ -849,22 +861,30 @@ static VALUE
 rbpcap_each_data(VALUE self)
 {
   rbpcap_t *rbp;
-	int fno = -1;
+#if defined(WIN32)
+  HANDLE fno;
+#else
+  int fno = -1;
+#endif
 	
   Data_Get_Struct(self, rbpcap_t, rbp);
 
 	if(! rbpcap_ready(rbp)) return self; 
 	
-#if !defined(WIN32)
-  fno = pcap_get_selectable_fd(rbp->pd);
+#if defined(WIN32)
+  fno = pcap_getevent(rbp->pd);
 #else
-  fno = pcap_fileno(rbp->pd);
+  fno = pcap_get_selectable_fd(rbp->pd);
 #endif
 
   for(;;) {
   	VALUE packet = rbpcap_next_data(self);
   	if(packet == Qnil && rbp->type == OFFLINE) break;
+#if defined(WIN32)
+	  packet == Qnil ? rbpcap_thread_wait_handle(fno) : rb_yield(packet);
+#else
 	  packet == Qnil ? rb_thread_wait_fd(fno) : rb_yield(packet);
+#endif
   }
 
   return self;
@@ -882,22 +902,30 @@ static VALUE
 rbpcap_each_packet(VALUE self)
 {
   rbpcap_t *rbp;
-	int fno = -1;
+#if defined(WIN32)
+  HANDLE fno;
+#else
+  int fno = -1;
+#endif
 	
   Data_Get_Struct(self, rbpcap_t, rbp);
 
 	if(! rbpcap_ready(rbp)) return self; 
 	
-#if !defined(WIN32)
-  fno = pcap_get_selectable_fd(rbp->pd);
+#if defined(WIN32)
+  fno = pcap_getevent(rbp->pd);
 #else
-  fno = pcap_fileno(rbp->pd);
+  fno = pcap_get_selectable_fd(rbp->pd);
 #endif
 
   for(;;) {
   	VALUE packet = rbpcap_next_packet(self);
   	if(packet == Qnil && rbp->type == OFFLINE) break;
+#if defined(WIN32)
+	  packet == Qnil ? rbpcap_thread_wait_handle(fno) : rb_yield(packet);
+#else
 	  packet == Qnil ? rb_thread_wait_fd(fno) : rb_yield(packet);
+#endif
   }
 
   return self;
@@ -1103,6 +1131,36 @@ rbpacket_data(VALUE self)
 
   return rb_str_new((char *) rbpacket->pkt, rbpacket->hdr->caplen); 
 }
+
+#if defined(WIN32)
+static VALUE
+rbpcap_thread_wait_handle_blocking(void *data)
+{
+  VALUE result;
+  result = (VALUE)WaitForSingleObject(data, 100);
+  return result;
+}
+
+/*
+*
+* Waits for the HANDLE returned by pcap_getevent to have data
+*
+*/
+static VALUE
+rbpcap_thread_wait_handle(HANDLE fno)
+{
+  VALUE result;
+#if MAKE_TRAP
+  // Ruby 1.8 doesn't support rb_thread_blocking_region
+  result = rb_thread_polling();
+#else
+  result = (VALUE)rb_thread_blocking_region(
+      rbpcap_thread_wait_handle_blocking,
+      fno, RUBY_UBF_IO, 0);
+#endif
+  return result;
+}
+#endif
 
 
 void
