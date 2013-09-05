@@ -804,6 +804,8 @@ rbpcap_next_packet(VALUE self)
 	rbpcapjob_t job;
 	char eb[PCAP_ERRBUF_SIZE];
 	int ret;	
+	struct pcap_pkthdr* hdr;
+	u_char* pkt;
 	
 	rbpacket_t* rbpacket;
 	
@@ -829,8 +831,12 @@ rbpcap_next_packet(VALUE self)
 	if(ret > 0 && job.hdr.caplen > 0)
     {
       rbpacket = ALLOC(rbpacket_t);
-      rbpacket->hdr = &job.hdr;
-      rbpacket->pkt = (u_char *)&job.pkt;
+      hdr = ALLOC(struct pcap_pkthdr); 
+      pkt = ALLOC_N(u_char, job.hdr.caplen);
+      memcpy(hdr, &job.hdr, sizeof(struct pcap_pkthdr));
+      memcpy(pkt, job.pkt, job.hdr.caplen);
+      rbpacket->hdr = hdr;
+      rbpacket->pkt = pkt;
       return Data_Wrap_Struct(rb_cPkt, 0, rbpacket_free, rbpacket);
     }
 
