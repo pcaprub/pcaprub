@@ -362,6 +362,28 @@ rbpcap_setfilter(VALUE self, VALUE filter)
 }
 
 /*
+* call-seq:
+*   compile(filter)
+*
+* Raises an exception if "filter" has a syntax error
+*
+* Returns self if the filter is valid
+*/
+static VALUE
+rbpcap_compile(VALUE self, VALUE filter) {
+  struct bpf_program bpf;
+  u_int32_t mask = 0;
+  rbpcap_t *rbp;
+
+  Data_Get_Struct(self, rbpcap_t, rbp);
+  if(pcap_compile(rbp->pd, &bpf, RSTRING_PTR(filter), 0, mask) < 0) {
+    rb_raise(eBPFilterError, "invalid bpf filter");
+  } else {
+    return self;
+  }
+}
+
+/*
 * Activate the interface
 *
 * call-seq:
@@ -1259,6 +1281,7 @@ Init_pcaprub_c()
 
   rb_define_method(rb_cPcap, "next", rbpcap_next_data, 0);
   rb_define_method(rb_cPcap, "setfilter", rbpcap_setfilter, 1);
+  rb_define_method(rb_cPcap, "compile", rbpcap_compile, 1);
   rb_define_method(rb_cPcap, "setmonitor", rbpcap_setmonitor, 1);
   rb_define_method(rb_cPcap, "setsnaplen", rbpcap_setsnaplen, 1);
   rb_define_method(rb_cPcap, "settimeout", rbpcap_settimeout, 1);
