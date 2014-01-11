@@ -85,7 +85,11 @@ rbpcap_s_lookupdev(VALUE self)
   /* We don't need any more the device list. Free it */
   pcap_freealldevs(alldevs);
 #else
-  dev = pcap_lookupdev(eb);
+  printf("NOOOOOOOOOOOOOOOOOO\n");
+
+  //dev = pcap_lookupdev(eb);
+  dev = "dario0";
+
   if (dev == NULL) {
 	rb_raise(eBindingError, "%s", eb);
  }
@@ -720,7 +724,7 @@ rbpcap_inject(VALUE self, VALUE payload)
   rbpcap_t *rbp;
 
   if(TYPE(payload) != T_STRING)
-  	rb_raise(rb_eArgError, "payload must be a string");
+  	rb_raise(rb_eArgError, "pupayload must be a string");
 
   Data_Get_Struct(self, rbpcap_t, rbp);
 
@@ -856,6 +860,8 @@ rbpcap_each_data(VALUE self)
 	int fno = -1;
 
   Data_Get_Struct(self, rbpcap_t, rbp);
+
+    printf("CIAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n");
 
 	if(! rbpcap_ready(rbp)) return self;
 
