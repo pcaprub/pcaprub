@@ -211,8 +211,8 @@ static VALUE
 rbpcap_setmonitor(VALUE self, VALUE mode)
 {
   rbpcap_t *rbp;
-  Data_Get_Struct(self, rbpcap_t, rbp);
   int rfmon_mode = 0;
+  Data_Get_Struct(self, rbpcap_t, rbp);
   if (mode == Qtrue) {
     rfmon_mode = 1;
   } else if (mode == Qfalse) {
@@ -289,8 +289,8 @@ static VALUE
 rbpcap_setpromisc(VALUE self, VALUE mode)
 {
   rbpcap_t *rbp;
-  Data_Get_Struct(self, rbpcap_t, rbp);
   int promisc_mode = 0;
+  Data_Get_Struct(self, rbpcap_t, rbp);
   if (mode == Qtrue) {
     promisc_mode = 1;
   } else if (mode == Qfalse) {
