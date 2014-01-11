@@ -36,7 +36,6 @@ Gem::Specification.new do |s|
     "examples/telnet-raw.pcap",
     "ext/pcaprub/extconf.rb",
     "ext/pcaprub/pcaprub.c",
-    "lib/pcaprub.bundle",
     "lib/pcaprub.rb",
     "lib/pcaprub/common.rb",
     "lib/pcaprub/ext.rb",
@@ -76,4 +75,3 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rake-compiler>, [">= 0"])
   end
 end
-
