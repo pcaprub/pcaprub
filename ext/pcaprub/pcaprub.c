@@ -86,7 +86,6 @@ rbpcap_s_lookupdev(VALUE self)
   pcap_freealldevs(alldevs);
 #else
   dev = pcap_lookupdev(eb);
-
   if (dev == NULL) {
 	rb_raise(eBindingError, "%s", eb);
  }
@@ -857,8 +856,6 @@ rbpcap_each_data(VALUE self)
 	int fno = -1;
 
   Data_Get_Struct(self, rbpcap_t, rbp);
-
-    printf("CIAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n");
 
 	if(! rbpcap_ready(rbp)) return self;
 
