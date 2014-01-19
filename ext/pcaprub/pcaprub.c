@@ -46,7 +46,7 @@ typedef struct rbpcapjob {
 } rbpcapjob_t;
 
 typedef struct rbpacket {
-  struct pcap_pkthdr* hdr;
+  struct pcap_pkthdr hdr;
   u_char* pkt;
 } rbpacket_t;
 
@@ -150,10 +150,6 @@ static void rbpcap_free(rbpcap_t *rbp) {
 */
 static void rbpacket_free(rbpacket_t *rbpacket)
 {
-
-  if(rbpacket->hdr != NULL) {
-    rbpacket->hdr = NULL;
-  }
 
   if(rbpacket->pkt != NULL) {
     rbpacket->pkt = NULL;
@@ -833,8 +829,8 @@ rbpcap_next_packet(VALUE self)
 	if(ret > 0 && job.hdr.caplen > 0)
     {
       rbpacket = ALLOC(rbpacket_t);
-      rbpacket->hdr = &job.hdr;
-      rbpacket->pkt = (u_char *)&job.pkt;
+      rbpacket->hdr = job.hdr;
+      rbpacket->pkt = (u_char *)job.pkt;
       return Data_Wrap_Struct(rb_cPkt, 0, rbpacket_free, rbpacket);
     }
 
@@ -1033,7 +1029,7 @@ rbpacket_time(VALUE self)
 {
   rbpacket_t* rbpacket;
   Data_Get_Struct(self, rbpacket_t, rbpacket);
-  return INT2NUM(rbpacket->hdr->ts.tv_sec);
+  return INT2NUM(rbpacket->hdr.ts.tv_sec);
 }
 
 /*
@@ -1053,7 +1049,7 @@ rbpacket_microsec(VALUE self)
 {
   rbpacket_t* rbpacket;
   Data_Get_Struct(self, rbpacket_t, rbpacket);
-  return INT2NUM(rbpacket->hdr->ts.tv_usec);
+  return INT2NUM(rbpacket->hdr.ts.tv_usec);
 }
 
 
@@ -1067,7 +1063,7 @@ rbpacket_length(VALUE self)
 {
   rbpacket_t* rbpacket;
   Data_Get_Struct(self, rbpacket_t, rbpacket);
-  return INT2NUM(rbpacket->hdr->len);
+  return INT2NUM(rbpacket->hdr.len);
 }
 
 /*
@@ -1081,14 +1077,11 @@ rbpacket_caplen(VALUE self)
   rbpacket_t* rbpacket;
   Data_Get_Struct(self, rbpacket_t, rbpacket);
 
-  if (rbpacket->hdr == NULL)
-    return Qnil;
-
   //test incorrect case
-  if (rbpacket->hdr->caplen > rbpacket->hdr->len)
-    return INT2NUM(rbpacket->hdr->len);
+  if (rbpacket->hdr.caplen > rbpacket->hdr.len)
+    return INT2NUM(rbpacket->hdr.len);
 
-  return INT2NUM(rbpacket->hdr->caplen);
+  return INT2NUM(rbpacket->hdr.caplen);
 }
 
 /*
@@ -1102,10 +1095,10 @@ rbpacket_data(VALUE self)
   rbpacket_t* rbpacket;
   Data_Get_Struct(self, rbpacket_t, rbpacket);
 
-  if ((rbpacket->pkt == NULL) || (rbpacket->hdr == NULL) || (rbpacket->hdr->caplen > rbpacket->hdr->len))
+  if ((rbpacket->pkt == NULL) || (rbpacket->hdr.caplen > rbpacket->hdr.len))
     return Qnil;
 
-  return rb_str_new((char *) rbpacket->pkt, rbpacket->hdr->caplen);
+  return rb_str_new((char *) rbpacket->pkt, rbpacket->hdr.caplen);
 }
 
 
