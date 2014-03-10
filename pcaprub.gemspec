@@ -6,11 +6,11 @@ require 'pcaprub/version'
 Gem::Specification.new do |spec|
   spec.name          = "pcaprub"
   spec.version       = PCAPRUB::Pcap.version
-  spec.authors       = ["shadowbq", "crondaemon"]
+  spec.authors       = ["shadowbq", "crondaemon", "jmcavinee"]
   spec.email         = "shadowbq@gmail.com"
   spec.description   = "libpcap bindings for ruby compat with JRUBY Ruby1.8 Ruby1.9"
   spec.summary       = "libpcap bindings for ruby"
-  spec.homepage      = "http://github.com/shadowbq/pcaprub"
+  spec.homepage      = "https://github.com/pcaprub/pcaprub"
   spec.license       = "MIT"
 
   spec.files = [

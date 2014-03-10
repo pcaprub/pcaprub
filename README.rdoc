@@ -1,7 +1,9 @@
 = pcaprub
 
-{<img src="https://travis-ci.org/kevinmahaffey/pcaprub.png" />}[https://travis-ci.org/kevinmahaffey/pcaprub]
-{<img src="https://codeclimate.com/github/shadowbq/pcaprub.png" />}[https://codeclimate.com/github/shadowbq/pcaprub]
+{<img src="https://travis-ci.org/pcaprub/pcaprub.png" alt="Build Status" />}[https://travis-ci.org/pcaprub/pcaprub]
+{<img src="https://codeclimate.com/github/pcaprub/pcaprub.png" />}[https://codeclimate.com/github/pcaprub/pcaprub]
+{<img src="https://badge.fury.io/rb/pcaprub.png" alt="Gem Version" />}[http://badge.fury.io/rb/pcaprub]
+{<img src="https://gemnasium.com/shadowbq/pcaprub.png" alt="Dependency Status" />}[https://gemnasium.com/shadowbq/pcaprub]
 
 This goal of this project is to provide a consistent interface 
 to LBL's libpcap packet capture library. This project was created 
@@ -29,8 +31,8 @@ Requirements:
 
 == Current Repository for Gemcutter source
 
-The Git Repo on Github @shadowbq is forked from the Metasploit SVN repo
-  git clone git://github.com/shadowbq/pcaprub.git
+The Git Repo on Github @pcaprub is forked from the Metasploit SVN repo
+  git clone git://github.com/pcaprub/pcaprub.git
 
 == Notes on 11.x series and beyond.
 
@@ -56,6 +58,8 @@ Timestamps are now available when yeilding packets instead of strings
   end
     
 === Notes on other repositories
+
+On March 2014 this project was migrated to https://github.com/pcaprub/pcaprub
 
 The Metasploit Project also provides a Subversion repository: (0.9-dev)
   svn checkout http://metasploit.com/svn/framework3/trunk/external/pcaprub/
