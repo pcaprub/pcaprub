@@ -11,6 +11,7 @@ Gem::Specification.new do |spec|
   spec.description   = "libpcap bindings for ruby compat with JRUBY Ruby1.8 Ruby1.9"
   spec.summary       = "libpcap bindings for ruby"
   spec.homepage      = "https://github.com/pcaprub/pcaprub"
+  spec.requirements  = "libpcap"
   spec.license       = "MIT"
 
   spec.files = [
