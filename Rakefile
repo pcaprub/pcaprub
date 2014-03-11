@@ -1,13 +1,19 @@
-require "bundler/gem_tasks"
-require 'rake/extensiontask'
+#require "bundler/gem_tasks"
 require './lib/pcaprub/version.rb'
 
-gemspec = Gem::Specification.new do |spec|
+def java?
+  /java/ === RUBY_PLATFORM
+end
+
+ENV['LANG'] = "en_US.UTF-8" 
+
+
+@gemspec = Gem::Specification.new do |spec|
   spec.name          = "pcaprub"
   spec.version       = PCAPRUB::Pcap.version
   spec.authors       = ["shadowbq", "crondaemon", "jmcavinee"]
   spec.email         = "shadowbq@gmail.com"
-  spec.description   = "libpcap bindings for ruby compat with JRUBY Ruby1.8 Ruby1.9"
+  spec.description   = "libpcap bindings for ruby compat with Ruby1.8 Ruby1.9"
   spec.summary       = "libpcap bindings for ruby"
   spec.homepage      = "https://github.com/pcaprub/pcaprub"
   spec.requirements  = "libpcap"
@@ -26,14 +32,12 @@ gemspec = Gem::Specification.new do |spec|
     "examples/file_cap.rb",
     "examples/simple_cap.rb",
     "examples/telnet-raw.pcap",
-    "ext/pcaprub/extconf.rb",
-    "ext/pcaprub/pcaprub.c",
+    "ext/pcaprub_c/extconf.rb",
+    "ext/pcaprub_c/pcaprub.c",
     "lib/pcaprub.rb",
-    "lib/pcaprub.so",
     "lib/pcaprub/common.rb",
     "lib/pcaprub/ext.rb",
     "lib/pcaprub/version.rb",
-    "pcaprub.gemspec",
     "test/helper.rb",
     "test/test_pcaprub.rb",
     "test/test_pcaprub_unit.rb"
@@ -44,30 +48,23 @@ gemspec = Gem::Specification.new do |spec|
     "LICENSE",
     "README.rdoc",
     "USAGE.rdoc",
-    "ext/pcaprub/pcaprub.c"
+    "ext/pcaprub_c/pcaprub.c"
   ]
+  spec.extensions = FileList["ext/**/extconf.rb"]
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "bundler", "~> 1.3"
-  spec.add_development_dependency "rake"
-  spec.add_development_dependency "rake-compiler"
-  spec.add_development_dependency "shoulda"
+  spec.add_development_dependency "rake", '>= 0.9.2'
+  spec.add_development_dependency "rake-compiler", '>= 0.6.0'
+  spec.add_development_dependency "shoulda", '~> 3.5'
   if RUBY_VERSION < "1.9.3"
         s.add_development_dependency(%q<activesupport>, ["~> 3.0"])
   end
 end
 
-require 'rubygems/package_task'
-Gem::PackageTask.new(gemspec) do |pkg|
-  pkg.need_zip = false
-  pkg.need_tar = false
-end
 
-Rake::ExtensionTask.new('pcaprub', gemspec)
-
-task :default => [:clean, :compile, :test]
 
 require 'rake/testtask'
 Rake::TestTask.new(:test) do |test|
@@ -90,6 +87,17 @@ rescue LoadError
 end
 
 task :test
+
+require 'rubygems/package_task'
+Gem::PackageTask.new(@gemspec) do |pkg|
+  pkg.need_zip = false
+  pkg.need_tar = false
+end
+
+require 'rake/extensiontask'
+Rake::ExtensionTask.new('pcaprub_c', @gemspec)
+
+task :default => [:compile, :test]
 
 require 'rdoc/task'
 RDoc::Task.new do |rdoc|

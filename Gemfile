@@ -1,4 +1,8 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in pcaprub.gemspec
-gemspec
+# No more static spec file
+
+gem 'rake', '>= 0.9.2'
+gem 'rake-compiler', '>= 0.6.0'
+gem 'shoulda', '~> 3.5'
+gem 'rubygems-tasks'

@@ -1103,7 +1103,7 @@ rbpacket_data(VALUE self)
 
 
 void
-Init_pcaprub()
+Init_pcaprub_c()
 {
   /*
   * Document-class: Pcap

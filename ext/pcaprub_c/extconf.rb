@@ -1,5 +1,5 @@
 require 'mkmf'
-extension_name = 'pcaprub'
+extension_name = 'pcaprub_c'
 
 puts "\n[*] Running checks for #{extension_name} code..."
 puts("platform is #{RUBY_PLATFORM}")
