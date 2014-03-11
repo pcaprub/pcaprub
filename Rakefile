@@ -13,7 +13,7 @@ ENV['LANG'] = "en_US.UTF-8"
   spec.version       = PCAPRUB::Pcap.version
   spec.authors       = ["shadowbq", "crondaemon", "jmcavinee"]
   spec.email         = "shadowbq@gmail.com"
-  spec.description   = "libpcap bindings for ruby compat with Ruby1.8 Ruby1.9"
+  spec.description   = "libpcap bindings for ruby with Ruby1.8 Ruby1.9"
   spec.summary       = "libpcap bindings for ruby"
   spec.homepage      = "https://github.com/pcaprub/pcaprub"
   spec.requirements  = "libpcap"
@@ -59,12 +59,12 @@ ENV['LANG'] = "en_US.UTF-8"
   spec.add_development_dependency "rake", '>= 0.9.2'
   spec.add_development_dependency "rake-compiler", '>= 0.6.0'
   spec.add_development_dependency "shoulda", '~> 3.5'
+
   if RUBY_VERSION < "1.9.3"
-        s.add_development_dependency(%q<activesupport>, ["~> 3.0"])
+    s.add_development_dependency(%q<activesupport>, ["~> 3.0"])
   end
+
 end
-
-
 
 require 'rake/testtask'
 Rake::TestTask.new(:test) do |test|
@@ -110,3 +110,6 @@ RDoc::Task.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
   rdoc.rdoc_files.include('ext/**/*.c')
 end
+
+require 'rubygems/tasks'
+Gem::Tasks.new
