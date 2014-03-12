@@ -9,3 +9,6 @@ require 'pcaprub'
 
 class Test::Unit::TestCase
 end
+
+require 'coveralls'
+Coveralls.wear!
