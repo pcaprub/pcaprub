@@ -6,17 +6,30 @@
 {<img src="https://gemnasium.com/shadowbq/pcaprub.png" alt="Dependency Status" />}[https://gemnasium.com/shadowbq/pcaprub]
 
 This goal of this project is to provide a consistent interface 
-to LBL's libpcap packet capture library. This project was created 
-because the currently available ruby-pcap library is poorly designed 
-and has been unmaintained since 2000. 
+to LBL's libpcap packet capture library. 
+
+== Limitations
 
 This does not provide packet processing functionality, it simply provides 
 the interface for capturing packets, and passing yielding those packets. 
 
-For true packet processing capability look at PCAPFU PCAPLET etc..
+For packet processing capability look at ruby gems PCAPFU, PCAPLET, etc..
 
-Requirements:
+== Requirements
+
+MRI POSIX Ruby (Native compilation)
+  Ruby 1.8.7  (EOL June 2014)
+  Ruby 1.9.3 or higher
+  Ruby 2.x or higher
+
   libpcap - http://www.tcpdump.org
+
+MRI Windows Ruby (Native compilation)
+  Ruby 1.8.7 (EOL June 2014)
+  Ruby 1.9.3 or higher
+  Ruby 2.x or higher
+
+  WinPcap - http://www.winpcap.org
 
 == Installation  
 
@@ -34,7 +47,9 @@ Requirements:
 The Git Repo on Github @pcaprub is forked from the Metasploit SVN repo
   git clone git://github.com/pcaprub/pcaprub.git
 
-== Notes on 11.x series and beyond.
+== Additionals
+
+=== Notes on 0.11.x series and beyond.
 
 The gem is now a module. The module is autoincluded, but this helps with name collisions and additional growth.
 
@@ -47,7 +62,7 @@ The file handling in dumper is now attached to the Capture Class and not the Mod
     { ... }
   capture.dump_close
   
-== Timstamps from the PCAP Header 
+=== Timstamps from the PCAP Header 
 
 Timestamps are now available when yeilding packets instead of strings
 
@@ -57,9 +72,29 @@ Timestamps are now available when yeilding packets instead of strings
     puts "micro => #{packet.microsec}"
   end
     
-=== Notes on other repositories
+=== Ruby 1.8.7 & WinPcap
 
-On March 2014 this project was migrated to https://github.com/pcaprub/pcaprub
+On Ruby 1.8 with winpcap, rb_thread_polling pauses for 100 milliseconds between reads. This may mean some packets are missed. 
+
+  
+== LICENSE
+
+GNU Lesser General Public License v2.1 (LGPL-2.1)
+
+https://www.tldrlegal.com/l/lgpl2
+
+See LICENCE for details
+
+Copyright © 2010 - 2014 
+
+=== Notes on other repositories in compliance with LGPL-2.1
+
+All original code maintains its copyright from its original authors and licensing.
+
+On March 2014 this project was migrated to https://github.com/pcaprub/pcaprub from https://github.com/shadowbq/pcaprub
+
+The Git Repo on Github @pcaprub is a forked merge from the Metasploit SVN repo
+  git clone git://github.com/shadowbq/pcaprub.git (moved)
 
 The Metasploit Project also provides a Subversion repository: (0.9-dev)
   svn checkout http://metasploit.com/svn/framework3/trunk/external/pcaprub/
@@ -75,6 +110,7 @@ SourceForge Masaki Fukushima 2000 (0.6) -- Object Creation Heavy Implementation 
   http://sourceforge.net/apps/trac/rubypcap/
   
 Additonal Github Repos
-  github.com/dxoigmn/pcaprub (0.8-dev)
-  github.com/spox /pcaprub-spox  (0.8-dev+)
+  https://github.com/dxoigmn/pcaprub (0.8-dev)
+  https://github.com/spox /pcaprub-spox  (0.8-dev+)
+
   
