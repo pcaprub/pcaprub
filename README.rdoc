@@ -102,9 +102,10 @@ The Metasploit Project also provides a Subversion repository: (0.9-dev)
 Packetfu Project also provides a listing (0.9-dev) 
   http://code.google.com/p/packetfu/source/browse/#svn/trunk/pcaprub_linux
   
-The Outdate RubyForge svn version can be obtained from Subversion: (0.7-dev)
+The Marshall Beddoe's Outdate RubyForge svn version can be obtained from Subversion: (0.7-dev)
   svn checkout http://pcaprub.rubyforge.org/svn/trunk/
   http download Public Rubyforge (0.6)
+  https://github.com/unmarshal/pcaprub
 
 SourceForge Masaki Fukushima 2000 (0.6) -- Object Creation Heavy Implementation (PCAPLET integrated)
   http://sourceforge.net/apps/trac/rubypcap/

@@ -11,13 +11,13 @@ ENV['LANG'] = "en_US.UTF-8"
 @gemspec = Gem::Specification.new do |spec|
   spec.name          = "pcaprub"
   spec.version       = PCAPRUB::Pcap.version
-  spec.authors       = ["shadowbq", "crondaemon", "jmcavinee"]
+  spec.authors       = ["shadowbq", "crondaemon", "jmcavinee", "unmarshal"]
   spec.email         = "shadowbq@gmail.com"
-  spec.description   = "libpcap bindings for ruby with Ruby1.8 Ruby1.9"
+  spec.description   = "libpcap bindings for ruby with Ruby1.8, Ruby1.9, Ruby 2.x"
   spec.summary       = "libpcap bindings for ruby"
   spec.homepage      = "https://github.com/pcaprub/pcaprub"
   spec.requirements  = "libpcap"
-  spec.license       = "MIT"
+  spec.license       = "LGPL-2.1"
 
   spec.files = [
     ".document",
@@ -59,6 +59,7 @@ ENV['LANG'] = "en_US.UTF-8"
   spec.add_development_dependency "rake", '>= 0.9.2'
   spec.add_development_dependency "rake-compiler", '>= 0.6.0'
   spec.add_development_dependency "shoulda-context", '~> 1.1.6'
+  spec.add_development_dependency "minitest", '~> 4.7.0'
 
 end
 
