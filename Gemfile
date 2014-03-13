@@ -10,7 +10,7 @@ group :development, :test do
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 4.7.0'
   gem 'shoulda-context', '~> 1.1.6'
-  platforms [:ruby_19, :ruby_20, :ruby_21] do
+  platforms :ruby_19, :ruby_20, :ruby_21 do
     gem 'coveralls', :require => false
   end
 end
