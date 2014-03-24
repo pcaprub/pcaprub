@@ -106,7 +106,7 @@ class Pcap::UnitTest < Test::Unit::TestCase
     t.kill
     puts "Background thread ticked #{@c} times while capture was running"
     puts "Captured #{pkt_count} packets"
-    assert(0 < @c, "Background thread should tick about 100 times, got: #{@c}");
+    assert(0 < @c, "Background thread failed to tick while capture was running");
     true
   end
 
