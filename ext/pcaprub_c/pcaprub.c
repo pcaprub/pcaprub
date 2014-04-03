@@ -1161,7 +1161,7 @@ rbpcap_thread_wait_handle(HANDLE fno)
 
 
 void
-Init_pcaprub()
+Init_pcaprub_c()
 {
   /*
   * Document-class: Pcap
