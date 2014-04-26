@@ -92,10 +92,12 @@ class Pcap::UnitTest < Test::Unit::TestCase
     @c = 0
     t = Thread.new { while(true); @c += 1; select(nil, nil, nil, 0.10); end; }
 
+    pkt_count = 0
     require 'timeout'
     begin
       Timeout.timeout(10) do
         o.each do |pkt|
+          pkt_count += 1
         end
       end
     rescue ::Timeout::Error
@@ -103,6 +105,8 @@ class Pcap::UnitTest < Test::Unit::TestCase
 
     t.kill
     puts "Background thread ticked #{@c} times while capture was running"
+    puts "Captured #{pkt_count} packets"
+    assert(0 < @c, "Background thread failed to tick while capture was running");
     true
   end
 
@@ -114,6 +118,7 @@ class Pcap::UnitTest < Test::Unit::TestCase
   end
 
   def test_monitor
+    return if RUBY_PLATFORM =~ /mingw|win/
     d = Pcap.lookupdev
     o = Pcap.create(d)
     assert_equal(o, o.setmonitor(true))
