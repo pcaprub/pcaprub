@@ -123,4 +123,16 @@ class Pcap::UnitTest < Test::Unit::TestCase
     o = Pcap.create(d)
     assert_equal(o, o.setmonitor(true))
   end
+
+  def test_filter
+    d = Pcap.lookupdev
+    o = Pcap.create(d)
+    o.activate
+    assert_nothing_raised do
+      o.compile("ip host 1.2.3.4")
+    end
+    assert_raise PCAPRUB::BPFError do
+      o.compile("A non working filter")
+    end
+  end
 end

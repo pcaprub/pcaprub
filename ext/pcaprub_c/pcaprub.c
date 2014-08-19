@@ -352,12 +352,16 @@ rbpcap_setfilter(VALUE self, VALUE filter)
   		rb_warn("unable to get IP: %s", eb);
   	}
 
-  if(pcap_compile(rbp->pd, &bpf, RSTRING_PTR(filter), 0, mask) < 0)
-  	rb_raise(eBPFilterError, "invalid bpf filter");
+  if(pcap_compile(rbp->pd, &bpf, RSTRING_PTR(filter), 0, mask) < 0) {
+  	rb_raise(eBPFilterError, "invalid bpf filter: %s", pcap_geterr(rbp->pd));
+  }
 
-  if(pcap_setfilter(rbp->pd, &bpf) < 0)
-  	rb_raise(eBPFilterError, "unable to set bpf filter");
+  if(pcap_setfilter(rbp->pd, &bpf) < 0) {
+    pcap_freecode(&bpf);
+  	rb_raise(eBPFilterError, "unable to set bpf filter: %s", pcap_geterr(rbp->pd));
+  }
 
+  pcap_freecode(&bpf);
   return self;
 }
 
@@ -377,10 +381,11 @@ rbpcap_compile(VALUE self, VALUE filter) {
 
   Data_Get_Struct(self, rbpcap_t, rbp);
   if(pcap_compile(rbp->pd, &bpf, RSTRING_PTR(filter), 0, mask) < 0) {
-    rb_raise(eBPFilterError, "invalid bpf filter");
-  } else {
-    return self;
+    rb_raise(eBPFilterError, "invalid bpf filter: %s", pcap_geterr(rbp->pd));
   }
+
+  pcap_freecode(&bpf);
+  return self;
 }
 
 /*
