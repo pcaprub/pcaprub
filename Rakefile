@@ -5,7 +5,7 @@ def java?
   /java/ === RUBY_PLATFORM
 end
 
-ENV['LANG'] = "en_US.UTF-8" 
+ENV['LANG'] = "en_US.UTF-8"
 
 
 @gemspec = Gem::Specification.new do |spec|
@@ -66,7 +66,7 @@ end
 require 'rake/testtask'
 Rake::TestTask.new(:test) do |test|
   test.libs << 'lib' << 'test'
-  test.pattern = 'test/**/test_*.rb'
+  test.test_files = FileList['test/test_pcaprub_unit.rb']
   test.verbose = true
 end
 
