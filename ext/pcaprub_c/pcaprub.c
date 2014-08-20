@@ -273,12 +273,13 @@ rbpcap_listdatalinks(VALUE self)
 {
   rbpcap_t *rbp;
   int *links, numlinks;
+  int i;
   Data_Get_Struct(self, rbpcap_t, rbp);
 
   numlinks = pcap_list_datalinks(rbp->pd, &links);
   if (numlinks > 0) {
     VALUE hash = rb_hash_new();
-    for (int i = 0; i < numlinks; i++) {
+    for (i = 0; i < numlinks; i++) {
       const char *name = pcap_datalink_val_to_name(links[i]);
       if (name != NULL) {
         VALUE namestring = rb_str_new2(name);
