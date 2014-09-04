@@ -34,7 +34,11 @@ MRI Windows Ruby (Native compilation)
 
 == Installation  
 
-  gem install pcaprub  
+  gem install pcaprub
+  
+Advanced options in a Windows ENV
+  
+  gem install pcaprub --no-ri --no-rdoc -- --with-pcap-dir="c:/dev/src/WpdPack"
 
 == Usage
 
