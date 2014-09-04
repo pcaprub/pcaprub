@@ -29,7 +29,8 @@ MRI Windows Ruby (Native compilation)
   Ruby 1.9.3 or higher
   Ruby 2.x or higher
 
-  WinPcap - http://www.winpcap.org
+  WinPcap Developer's Pack - http://www.winpcap.org
+  
 
 == Installation  
 
