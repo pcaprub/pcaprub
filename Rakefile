@@ -5,7 +5,7 @@ def java?
   /java/ === RUBY_PLATFORM
 end
 
-ENV['LANG'] = "en_US.UTF-8" 
+ENV['LANG'] = "en_US.UTF-8"
 
 
 @gemspec = Gem::Specification.new do |spec|
@@ -56,10 +56,10 @@ ENV['LANG'] = "en_US.UTF-8"
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "bundler", "~> 1.3"
-  spec.add_development_dependency "rake", '>= 0.9.2'
-  spec.add_development_dependency "rake-compiler", '>= 0.6.0'
-  spec.add_development_dependency "shoulda-context", '~> 1.1.6'
-  spec.add_development_dependency "minitest", '~> 4.7.0'
+  spec.add_development_dependency "rake", '~> 0.9', '>= 0.9.2'
+  spec.add_development_dependency "rake-compiler", '~> 0.6', '>= 0.6.0'
+  spec.add_development_dependency "shoulda-context", '~> 1.1', '~> 1.1.6'
+  spec.add_development_dependency "minitest", '~> 4.7', '>= 4.7.0'
 
 end
 
@@ -110,3 +110,21 @@ end
 
 require 'rubygems/tasks'
 Gem::Tasks.new
+
+# Override standard release task
+require 'git'
+Rake::Task["release"].clear
+task :release do
+  version = "#{PCAPRUB::VERSION::STRING}"
+  remote = 'origin'
+  puts "Creating tag v#{version}"
+  git = Git.open(".")
+  git.add_tag("v#{version}")
+  puts "Pushing tag to #{remote}"
+  git.push(remote, 'master', true)
+  Rake::Task['clobber'].invoke
+  Rake::Task['compile'].invoke
+  Rake::Task['gem'].invoke
+  gemtask = Gem::Tasks::Push.new
+  gemtask.push("pkg/pcaprub-#{version}.gem")
+end
