@@ -117,6 +117,13 @@ class Pcap::UnitTest < Test::Unit::TestCase
     o.close
   end
 
+  def test_set_datalink
+    d = Pcap.lookupdev
+    o = Pcap.create(d)
+    dls = o.listdatalinks
+    assert_equal(o,o.setdatalink(dls.values.first))
+  end
+
   def test_monitor
     return if RUBY_PLATFORM =~ /mingw|win/
     d = Pcap.lookupdev
