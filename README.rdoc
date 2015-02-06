@@ -1,5 +1,7 @@
 = pcaprub
 
+{<img src="https://badges.gitter.im/Join%20Chat.svg" alt="Join the chat at https://gitter.im/pcaprub/pcaprub">}[https://gitter.im/pcaprub/pcaprub?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge]
+
 {<img src="https://travis-ci.org/pcaprub/pcaprub.png" alt="Build Status" />}[https://travis-ci.org/pcaprub/pcaprub]
 {<img src="https://codeclimate.com/github/pcaprub/pcaprub.png" />}[https://codeclimate.com/github/pcaprub/pcaprub]
 {<img src="https://badge.fury.io/rb/pcaprub.png" alt="Gem Version" />}[http://badge.fury.io/rb/pcaprub]
