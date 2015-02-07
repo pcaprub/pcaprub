@@ -774,6 +774,7 @@ static VALUE
 rbpcap_dump(VALUE self, VALUE caplen, VALUE pktlen, VALUE packet)
 {
   rbpcap_t *rbp;
+  struct timeval tv;
   struct pcap_pkthdr pcap_hdr;
 
   if(TYPE(packet) != T_STRING)
@@ -785,7 +786,9 @@ rbpcap_dump(VALUE self, VALUE caplen, VALUE pktlen, VALUE packet)
 
   Data_Get_Struct(self, rbpcap_t, rbp);
 
-  gettimeofday(&pcap_hdr.ts, NULL);
+  gettimeofday(&tv, NULL);
+  pcap_hdr.ts.tv_sec = tv.tv_sec;
+  pcap_hdr.ts.tv_usec = tv.tv_usec;
   pcap_hdr.caplen = NUM2UINT(caplen);
   pcap_hdr.len = NUM2UINT(pktlen);
 
@@ -1293,10 +1296,12 @@ Init_pcaprub_c()
   rb_define_const(rb_cPcap, "DLT_PPP_BSDOS", INT2NUM(DLT_PPP_BSDOS));
   rb_define_const(rb_cPcap, "DLT_IEEE802_11", INT2NUM(DLT_IEEE802_11));
   rb_define_const(rb_cPcap, "DLT_IEEE802_11_RADIO", INT2NUM(DLT_IEEE802_11_RADIO));
+#ifdef linux
   rb_define_const(rb_cPcap, "DLT_IEEE802_11_RADIO_AVS", INT2NUM(DLT_IEEE802_11_RADIO_AVS));
   rb_define_const(rb_cPcap, "DLT_LINUX_SLL", INT2NUM(DLT_LINUX_SLL));
   rb_define_const(rb_cPcap, "DLT_PRISM_HEADER", INT2NUM(DLT_PRISM_HEADER));
   rb_define_const(rb_cPcap, "DLT_AIRONET_HEADER", INT2NUM(DLT_AIRONET_HEADER));
+#endif
   /* Pcap Error Codes
    * Error codes for the pcap API.
    * These will all be negative, so you can check for the success or
