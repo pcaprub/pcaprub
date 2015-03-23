@@ -10,6 +10,10 @@ install:
   - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
   - ruby --version
   - gem --version
+  - gem install rake --no-rdoc --no-ri
+  - cinst: winpcap
+  - ps: (new-object net.webclient).DownloadFile('http://www.winpcap.org/install/bin/WpdPack_4_1_2.zip', 'WpdPack_4_1_2.zip')
+  - unzip WpdPack_4_1_2.zip
 build: off
 test_script:
   - rake -rdevkit test
