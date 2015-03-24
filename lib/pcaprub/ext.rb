@@ -6,7 +6,7 @@ begin
   elsif RUBY_VERSION =~ /2.0/
     require '2.0/pcaprub_c'
   elsif RUBY_VERSION =~ /2.1/
-    require '2.1/pcapru_c'
+    require '2.1/pcaprub_c'
   else
     require 'pcaprub_c'
   end

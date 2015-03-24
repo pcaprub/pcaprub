@@ -38,8 +38,7 @@ ENV['LANG'] = "en_US.UTF-8"
     "lib/pcaprub/common.rb",
     "lib/pcaprub/ext.rb",
     "lib/pcaprub/version.rb",
-    "test/helper.rb",
-    "test/test_pcaprub.rb",
+    "test/test_helper.rb",
     "test/test_pcaprub_unit.rb"
   ]
 
@@ -70,25 +69,26 @@ Rake::TestTask.new(:test) do |test|
   test.verbose = true
 end
 
-begin
-  require 'rcov/rcovtask'
-  Rcov::RcovTask.new do |test|
-    test.libs << 'test'
-    test.pattern = 'test/**/test_*.rb'
-    test.verbose = true
-  end
-rescue LoadError
-  task :rcov do
-    abort "RCov is not available. In order to run rcov, you must: sudo gem install spicycode-rcov"
-  end
-end
-
 task :test
 
 require 'rubygems/package_task'
 Gem::PackageTask.new(@gemspec) do |pkg|
   pkg.need_zip = false
   pkg.need_tar = false
+end
+
+# prepend DevKit into compilation phase
+if RUBY_PLATFORM =~ /mingw/
+  task :compile => [:devkit]
+  task :native  => [:devkit]
+end
+
+task :devkit do
+  begin
+    require "devkit"
+  rescue LoadError => e
+    abort "Failed to activate RubyInstaller's DevKit required for compilation."
+  end
 end
 
 require 'rake/extensiontask'

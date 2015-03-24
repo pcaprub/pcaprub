@@ -3,8 +3,8 @@
 base = File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
 $:.unshift(File.join(File.dirname(base)))
 
-require 'test/unit'
-require 'pcaprub'
+
+require File.expand_path '../test_helper.rb', __FILE__
 
 #
 # Simple unit test, requires r00t.
