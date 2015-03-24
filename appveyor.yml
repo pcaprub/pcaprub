@@ -15,12 +15,15 @@ install:
   - bundle install
   - cinst 7zip.commandline
   - cinst winpcap
-  - appveyor DownloadFile 'http://www.winpcap.org/install/bin/WpdPack_4_1_2.zip'
+  - appveyor DownloadFile http://www.winpcap.org/install/bin/WpdPack_4_1_2.zip
   - dir
   - 7za x .\WpdPack_4_1_2.zip -oc:\WpdPack
-build: off
+build_script:
+  - rake compile
 test_script:
-  - rake -rdevkit test
+  - rake test
+artifacts:
+  - path: pkg\*.gem  
 
 environment:
   matrix:
