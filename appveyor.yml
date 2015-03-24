@@ -10,7 +10,10 @@ install:
   - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
   - ruby --version
   - gem --version
+  - gem install bundler --quiet --no-ri --no-rdoc
   - gem install rake --no-rdoc --no-ri
+  - bundler --version
+  - bundle install
   - cinst: 7zip.commandline
   - cinst: winpcap
   - ps: (new-object net.webclient).DownloadFile('http://www.winpcap.org/install/bin/WpdPack_4_1_2.zip', 'WpdPack_4_1_2.zip')
