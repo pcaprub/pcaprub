@@ -32,3 +32,6 @@ environment:
     - ruby_version: "200-x64"
     - ruby_version: "21"
     - ruby_version: "21-x64"
+cache:
+  - C:\ProgramData\chocolatey\bin -> appveyor.yml
+  - C:\ProgramData\chocolatey\lib -> appveyor.yml    
