@@ -11,7 +11,6 @@ install:
   - ruby --version
   - gem --version
   - gem install bundler --quiet --no-ri --no-rdoc
-  - gem install rake --no-rdoc --no-ri
   - bundler --version
   - bundle install
   - cinst 7zip.commandline
