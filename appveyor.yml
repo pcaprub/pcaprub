@@ -17,11 +17,11 @@ install:
   - cinst winpcap
   - appveyor DownloadFile http://www.winpcap.org/install/bin/WpdPack_4_1_2.zip
   - dir
-  - 7za x .\WpdPack_4_1_2.zip -oc:\WpdPack
+  - 7za x .\WpdPack_4_1_2.zip -oc:\
 build_script:
-  - rake compile
+  - rake gem
 test_script:
-  - rake test
+  - gem install pkg\pcaprub-*.gem 
 artifacts:
   - path: pkg\*.gem  
 
