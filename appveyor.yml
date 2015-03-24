@@ -14,8 +14,8 @@ install:
   - gem install rake --no-rdoc --no-ri
   - bundler --version
   - bundle install
-  - cinst: 7zip.commandline
-  - cinst: winpcap
+  - cinst 7zip.commandline
+  - cinst winpcap
   - ps: (new-object net.webclient).DownloadFile('http://www.winpcap.org/install/bin/WpdPack_4_1_2.zip', 'WpdPack_4_1_2.zip')
   - 7za x WpdPack_4_1_2.zip -oc:\WpdPack
 build: off
