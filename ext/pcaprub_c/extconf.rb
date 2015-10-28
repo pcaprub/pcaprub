@@ -34,6 +34,33 @@ elsif /i386-mswin32/ =~ RUBY_PLATFORM
   have_library("wpcap", "pcap_open_live")
   have_library("wpcap", "pcap_setnonblock")
 else
+  libdir = RbConfig::CONFIG['libdir']
+  includedir = RbConfig::CONFIG['includedir']
+
+  header_dirs = [
+    # macports
+    '/opt/local/include',
+    # source installations
+    '/usr/local/include',
+    # ruby install locations
+    includedir,
+    # finally fall back to usr
+    '/usr/include'
+  ]
+
+  lib_dirs = [
+    # macports
+    '/opt/local/lib',
+    # source installations
+    '/usr/local/lib',
+    # ruby install locations
+    libdir,
+    # usr
+    '/usr/lib'
+  ]
+
+  dir_config("pcap", header_dirs, lib_dirs)
+
   have_library("pcap", "pcap_open_live", ["pcap.h"])
   have_library("pcap", "pcap_setnonblock", ["pcap.h"])
 end
