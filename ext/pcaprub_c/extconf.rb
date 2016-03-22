@@ -19,7 +19,7 @@ if /i386-mingw32/ =~ RUBY_PLATFORM || /x64-mingw32/ =~ RUBY_PLATFORM
   pcap_libdir     = with_config("pcap-libdir", pcap_dir + "/lib")
   
   $CFLAGS  = "-DWIN32 -I#{pcap_includedir}"
-  $CFLAGS += " -g -Og" if with_config("debug")
+  $CFLAGS += " -g" if with_config("debug")
   $LDFLAGS = "-L#{pcap_libdir}"
   $LDFLAGS += " -g" if with_config("debug")
   
@@ -34,7 +34,7 @@ elsif /i386-mswin32/ =~ RUBY_PLATFORM || /x64-mswin32/ =~ RUBY_PLATFORM
   pcap_libdir     = with_config("pcap-libdir", pcap_dir + "\\lib")
 
   $CFLAGS  = "-DWIN32 -I#{pcap_includedir}"
-  $CFLAGS += " -g -Og" if with_config("debug")
+  $CFLAGS += " -g" if with_config("debug")
   $LDFLAGS = "/link /LIBPATH:#{pcap_libdir}"
   $LDFLAGS += " -g" if with_config("debug")
   have_header("ruby/thread.h")
@@ -78,7 +78,7 @@ else
   have_library("pcap", "pcap_open_live", ["pcap.h"])
   have_library("pcap", "pcap_setnonblock", ["pcap.h"])
   
-  $CFLAGS = "-g -Og" if with_config("debug")
+  $CFLAGS = "-g" if with_config("debug")
   $LDFLAGS = "-g" if with_config("debug")
 end
 
