@@ -20,7 +20,7 @@ gem 'rake-compiler', '>= 0.6.0'
 gem 'rubygems-tasks'
 
 if Bundler.current_ruby.ruby_18?
-  gem 'git', '1.2.10'
+  gem 'git', '1.2.9'
 elsif Bundler.current_ruby.mri?
   gem 'git', '~> 1.3.0'
 end
