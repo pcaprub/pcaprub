@@ -1300,10 +1300,18 @@ Init_pcaprub_c()
   rb_define_const(rb_cPcap, "DLT_PPP_BSDOS", INT2NUM(DLT_PPP_BSDOS));
   rb_define_const(rb_cPcap, "DLT_IEEE802_11", INT2NUM(DLT_IEEE802_11));
   rb_define_const(rb_cPcap, "DLT_IEEE802_11_RADIO", INT2NUM(DLT_IEEE802_11_RADIO));
+#ifdef DLT_IEEE802_11_RADIO_AVS
   rb_define_const(rb_cPcap, "DLT_IEEE802_11_RADIO_AVS", INT2NUM(DLT_IEEE802_11_RADIO_AVS));
+#endif /* DLT_IEEE802_11_RADIO_AVS */
+#ifdef DLT_LINUX_SLL
   rb_define_const(rb_cPcap, "DLT_LINUX_SLL", INT2NUM(DLT_LINUX_SLL));
+#endif /* DLT_LINUX_SLL */
+#ifdef DLT_PRISM_HEADER
   rb_define_const(rb_cPcap, "DLT_PRISM_HEADER", INT2NUM(DLT_PRISM_HEADER));
+#endif /* DLT_PRISM_HEADER */
+#ifdef DLT_AIRONET_HEADER
   rb_define_const(rb_cPcap, "DLT_AIRONET_HEADER", INT2NUM(DLT_AIRONET_HEADER));
+#endif /* DLT_AIRONET_HEADER */
   /* Pcap Error Codes
    * Error codes for the pcap API.
    * These will all be negative, so you can check for the success or
