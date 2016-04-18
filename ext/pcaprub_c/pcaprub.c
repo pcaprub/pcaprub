@@ -1312,6 +1312,29 @@ Init_pcaprub_c()
 #ifdef DLT_AIRONET_HEADER
   rb_define_const(rb_cPcap, "DLT_AIRONET_HEADER", INT2NUM(DLT_AIRONET_HEADER));
 #endif /* DLT_AIRONET_HEADER */
+
+#ifdef DLT_BLUETOOTH_HCI_H4
+  rb_define_const(rb_cPcap, "DLT_BLUETOOTH_HCI_H4", INT2NUM(DLT_BLUETOOTH_HCI_H4));
+#endif
+#ifdef DLT_BLUETOOTH_HCI_H4_WITH_PHDR
+  rb_define_const(rb_cPcap, "DLT_BLUETOOTH_HCI_H4_WITH_PHDR", INT2NUM(DLT_BLUETOOTH_HCI_H4_WITH_PHDR));
+#endif
+#ifdef DLT_IPFILTER
+  rb_define_const(rb_cPcap, "DLT_IPFILTER", INT2NUM(DLT_IPFILTER));
+#endif
+#ifdef DLT_LOOP
+  rb_define_const(rb_cPcap, "DLT_LOOP", INT2NUM(DLT_LOOP));
+#endif
+#ifdef DLT_USB
+  rb_define_const(rb_cPcap, "DLT_USB", INT2NUM(DLT_USB));
+#endif
+#ifdef DLT_USB_LINUX
+  rb_define_const(rb_cPcap, "DLT_USB_LINUX", INT2NUM(DLT_USB_LINUX));
+#endif
+#ifdef DLT_DOCSIS
+  rb_define_const(rb_cPcap, "DLT_DOCSIS", INT2NUM(DLT_DOCSIS));
+#endif
+
   /* Pcap Error Codes
    * Error codes for the pcap API.
    * These will all be negative, so you can check for the success or
