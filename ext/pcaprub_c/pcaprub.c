@@ -1,9 +1,12 @@
 #include "ruby.h"
 
+#ifdef HAVE_RUBY_THREAD_H
+  #include "ruby/thread.h"
+#endif
+
 #ifdef MAKE_TRAP
 #include "rubysig.h"
 #endif
-
 
 #include <pcap.h>
 #if defined(WIN32)
@@ -1244,6 +1247,10 @@ rbpcap_thread_wait_handle(HANDLE fno)
 #if MAKE_TRAP
   // Ruby 1.8 doesn't support rb_thread_blocking_region
   result = rb_thread_polling();
+#elif defined(HAVE_RB_THREAD_CALL_WITHOUT_GVL)
+  result = (VALUE)rb_thread_call_without_gvl(
+      rbpcap_thread_wait_handle_blocking,
+	  fno, RUBY_UBF_IO, 0);
 #else
   result = (VALUE)rb_thread_blocking_region(
       rbpcap_thread_wait_handle_blocking,
