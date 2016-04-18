@@ -128,6 +128,7 @@ class Pcap::UnitTest < Test::Unit::TestCase
     rescue PCAPRUB::LinkTypeError
       print "#{dls} - Data LinkType Binding issue in the environment (Skipping)"
       assert_equal(o,o)
+    end
   end
 
   def test_monitor
