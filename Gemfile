@@ -27,7 +27,7 @@ gem 'rubygems-tasks'
 if Bundler.current_ruby.ruby_18?
   gem 'rake', '< 10.6'
   gem 'git', '1.2.9'
-elsif Bundler.current_ruby.mri?
+elsif Bundler.current_ruby.mri? || Bundler.current_ruby.mingw? || Bundler.current_ruby.x64_mingw?
   gem 'rake', '>= 0.9.2'
   gem 'git', '~> 1.3.0'
 end

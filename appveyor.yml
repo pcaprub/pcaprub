@@ -21,10 +21,11 @@ install:
 build_script:
   - rake gem
 test_script:
-  - gem install pkg\pcaprub-*.gem 
+  - gem install pkg\pcaprub-*.gem
 artifacts:
-  - path: pkg\*.gem  
+  - path: pkg\*.gem
 
+# https://www.appveyor.com/docs/installed-software#ruby
 environment:
   matrix:
     - ruby_version: "193"
@@ -32,7 +33,9 @@ environment:
     # - ruby_version: "200-x64" (Winpcap.h is not linking under 64bit ruby builds)
     - ruby_version: "21"
     # - ruby_version: "21-x64"
+    - ruby_version: "22"
+
 cache:
   - C:\Users\appveyor\AppData\Local\Temp\chocolatey
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
-  - C:\ProgramData\chocolatey\lib -> appveyor.yml    
+  - C:\ProgramData\chocolatey\lib -> appveyor.yml
