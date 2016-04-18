@@ -1,6 +1,7 @@
 language: ruby
 before_install:
  - sudo apt-get install libpcap-dev -qq
+ - gem update bundler
 before_script:
  - travis_retry gem update bundler
 rvm:
