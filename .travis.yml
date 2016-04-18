@@ -1,4 +1,7 @@
 language: ruby
+before_install:
+ - sudo apt-get install libpcap-dev -qq
+ - gem update bundler
 rvm:
   - 1.8.7
   - 1.9.3
@@ -7,9 +10,6 @@ rvm:
   - 2.2.0
 matrix:
   allow_failures:
-    - rvm: ruby-head  
+    - rvm: ruby-head
 script:
   - rvmsudo bundle exec rake
-before_install:
- - sudo apt-get install libpcap-dev -qq
- - gem update bundler  
