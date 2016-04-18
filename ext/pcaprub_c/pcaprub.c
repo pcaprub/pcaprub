@@ -32,6 +32,7 @@ static VALUE rbpcap_thread_wait_handle(HANDLE fno);
 
 #define OFFLINE 1
 #define LIVE 2
+#define DEAD 3
 
 #if !defined(PCAP_NETMASK_UNKNOWN)
 /*
@@ -413,7 +414,11 @@ rbpcap_setfilter(VALUE self, VALUE filter)
   if(TYPE(filter) != T_STRING)
   	rb_raise(eBPFilterError, "filter must be a string");
 
-	if(! rbpcap_ready(rbp)) return self;
+  if(! rbpcap_ready(rbp)) return self;
+
+  if(rbp->type == DEAD) {
+  	rb_raise(eBPFilterError, "unable to set bpf filter on OPEN_DEAD");
+  }
 
   if(rbp->type == LIVE)
   	if(pcap_lookupnet(rbp->iface, &netid, &mask, eb) < 0) {
@@ -427,7 +432,7 @@ rbpcap_setfilter(VALUE self, VALUE filter)
   }
 
   if(pcap_setfilter(rbp->pd, &bpf) < 0) {
-    pcap_freecode(&bpf);
+  	pcap_freecode(&bpf);
   	rb_raise(eBPFilterError, "unable to set bpf filter: %s", pcap_geterr(rbp->pd));
   }
 
@@ -662,7 +667,6 @@ rbpcap_open_dead(VALUE self, VALUE linktype, VALUE snaplen)
 {
   rbpcap_t *rbp;
 
-
   if(TYPE(linktype) != T_FIXNUM)
       rb_raise(rb_eArgError, "linktype must be a fixnum");
   if(TYPE(snaplen) != T_FIXNUM)
@@ -671,7 +675,7 @@ rbpcap_open_dead(VALUE self, VALUE linktype, VALUE snaplen)
   Data_Get_Struct(self, rbpcap_t, rbp);
 
   memset(rbp->iface, 0, sizeof(rbp->iface));
-  rbp->type = OFFLINE;
+  rbp->type = DEAD;
 
   rbp->pd = pcap_open_dead(
       NUM2INT(linktype),
@@ -890,6 +894,10 @@ rbpcap_next_data(VALUE self)
 	if(rbp->type == OFFLINE && ret <= 0)
 	  return Qnil;
 
+  if(rbp->type == DEAD && ret <= 0)
+    return Qnil;
+
+
 	if(ret > 0 && job.hdr.caplen > 0)
     return rb_str_new((char *) job.pkt, job.hdr.caplen);
 
@@ -935,6 +943,9 @@ rbpcap_next_packet(VALUE self)
 	if(rbp->type == OFFLINE && ret <= 0)
 	  return Qnil;
 
+  if(rbp->type == DEAD && ret <= 0)
+    return Qnil;
+
 	if(ret > 0 && job.hdr.caplen > 0)
     {
       rbpacket = ALLOC(rbpacket_t);
@@ -977,6 +988,7 @@ rbpcap_each_data(VALUE self)
   for(;;) {
   	VALUE packet = rbpcap_next_data(self);
   	if(packet == Qnil && rbp->type == OFFLINE) break;
+    if(packet == Qnil && rbp->type == DEAD) break;
 #if defined(WIN32)
 	  packet == Qnil ? rbpcap_thread_wait_handle(fno) : rb_yield(packet);
 #else
@@ -1018,6 +1030,7 @@ rbpcap_each_packet(VALUE self)
   for(;;) {
   	VALUE packet = rbpcap_next_packet(self);
   	if(packet == Qnil && rbp->type == OFFLINE) break;
+    if(packet == Qnil && rbp->type == DEAD) break;
 #if defined(WIN32)
 	  packet == Qnil ? rbpcap_thread_wait_handle(fno) : rb_yield(packet);
 #else

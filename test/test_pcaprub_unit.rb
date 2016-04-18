@@ -138,6 +138,17 @@ class Pcap::UnitTest < Test::Unit::TestCase
     assert_equal(o, o.setmonitor(true))
   end
 
+  def test_open_dead
+    # No applied filters on OPEN_DEAD just compile checking
+    o = Pcap.open_dead(Pcap::DLT_NULL, 65535)
+    assert_nothing_raised do
+      o.compile("ip host 1.2.3.4")
+    end
+    assert_raise PCAPRUB::BPFError do
+      o.setfilter("ip host 1.2.3.5")
+    end
+  end
+
   def test_filter
     d = Pcap.lookupdev
     o = Pcap.create(d)
