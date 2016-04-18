@@ -15,12 +15,13 @@ group :development, :test do
   end
 end
 
-gem 'rake', '>= 0.9.2'
 gem 'rake-compiler', '>= 0.6.0'
 gem 'rubygems-tasks'
 
 if Bundler.current_ruby.ruby_18?
+  gem 'rake', '< 10.6'
   gem 'git', '1.2.9'
 elsif Bundler.current_ruby.mri?
+  gem 'rake', '>= 0.9.2'
   gem 'git', '~> 1.3.0'
 end
