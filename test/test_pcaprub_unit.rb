@@ -160,4 +160,11 @@ class Pcap::UnitTest < Test::Unit::TestCase
       o.compile("A non working filter")
     end
   end
+
+  def test_lib_version
+    v = Pcap.lib_version.split
+    assert_equal "libpcap", v[0]
+    assert_equal "version", v[1]
+    assert_equal 3, v[2].split('.').size
+  end
 end
