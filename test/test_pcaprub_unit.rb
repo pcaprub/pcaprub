@@ -13,19 +13,19 @@ require File.expand_path '../test_helper.rb', __FILE__
 class Pcap::UnitTest < Test::Unit::TestCase
   def test_version
     assert_equal(String, Pcap.version.class)
-    puts "Pcaprub version: #{Pcap.version}"
+    # puts "Pcaprub version: #{Pcap.version}"
   end
 
   def test_lookupdev
     assert_equal(String, Pcap.lookupdev.class)
-    puts "Pcaprub default device: #{Pcap.lookupdev}"
+    # puts "Pcaprub default device: #{Pcap.lookupdev}"
   end
 
   def test_lookupnet
     dev = Pcap.lookupdev
     assert_equal(Array, Pcap.lookupnet(dev).class)
     net = Pcap.lookupnet(dev)
-    puts "Pcaprub net (#{dev}): #{net[0]} #{[net[1]].pack("N").unpack("H*")[0]}"
+    # puts "Pcaprub net (#{dev}): #{net[0]} #{[net[1]].pack("N").unpack("H*")[0]}"
   end
 
   def test_pcap_new
@@ -106,8 +106,8 @@ class Pcap::UnitTest < Test::Unit::TestCase
     end
 
     t.kill
-    puts "Background thread ticked #{@c} times while capture was running"
-    puts "Captured #{pkt_count} packets"
+    # puts "Background thread ticked #{@c} times while capture was running"
+    # puts "Captured #{pkt_count} packets"
     assert(0 < @c, "Background thread failed to tick while capture was running");
     true
   end
