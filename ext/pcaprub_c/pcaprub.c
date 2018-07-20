@@ -62,6 +62,15 @@ typedef struct rbpacket {
 } rbpacket_t;
 
 /*
+* Return the pcap version
+*/
+static VALUE
+rbpcap_s_lib_version(VALUE self)
+{
+  return rb_str_new2(pcap_lib_version());
+}
+
+/*
 * Return the name of a network device on the system.
 *
 * The pcap_lookupdev subroutine gets a network device suitable for use with the pcap_open_live and the pcap_lookupnet subroutines. If no interface can be found, or none are configured to be up, Null is returned. In the case of multiple network devices attached to the system, the pcap_lookupdev subroutine returns the first one it finds to be up, other than the loopback interface. (Loopback is always ignored.)
@@ -1295,6 +1304,7 @@ Init_pcaprub_c()
 
   rb_define_module_function(rb_cPcap, "lookupdev", rbpcap_s_lookupdev, 0);
   rb_define_module_function(rb_cPcap, "lookupnet", rbpcap_s_lookupnet, 1);
+  rb_define_module_function(rb_cPcap, "lib_version", rbpcap_s_lib_version, 0);
 
   rb_define_const(rb_cPcap, "DLT_NULL",   INT2NUM(DLT_NULL));
   rb_define_const(rb_cPcap, "DLT_EN10MB", INT2NUM(DLT_EN10MB));
