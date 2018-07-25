@@ -9,15 +9,16 @@ ENV['LANG'] = "en_US.UTF-8"
 
 
 @gemspec = Gem::Specification.new do |spec|
-  spec.name          = "pcaprub"
-  spec.version       = PCAPRUB::Pcap.version
-  spec.authors       = ["shadowbq", "crondaemon", "jmcavinee", "unmarshal"]
-  spec.email         = "shadowbq@gmail.com"
-  spec.description   = "libpcap bindings for Ruby 2.x"
-  spec.summary       = "libpcap bindings for ruby"
-  spec.homepage      = "https://github.com/pcaprub/pcaprub"
-  spec.requirements  = "libpcap"
-  spec.license       = "LGPL-2.1"
+  spec.name                  = "pcaprub"
+  spec.version               = PCAPRUB::Pcap.version
+  spec.authors               = ["shadowbq", "crondaemon", "jmcavinee", "unmarshal"]
+  spec.email                 = "shadowbq@gmail.com"
+  spec.description           = "libpcap bindings for Ruby 2.x"
+  spec.summary               = "libpcap bindings for ruby"
+  spec.homepage              = "https://github.com/pcaprub/pcaprub"
+  spec.requirements          = "libpcap"
+  spec.license               = "LGPL-2.1"
+  spec.required_ruby_version = '~> 2.0'
 
   spec.files = [
     ".document",
