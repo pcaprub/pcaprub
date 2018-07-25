@@ -25,6 +25,7 @@ class Pcap::UnitTest < Test::Unit::TestCase
     dev = Pcap.lookupdev
     assert_equal(Array, Pcap.lookupnet(dev).class)
     net = Pcap.lookupnet(dev)
+    assert net
     # puts "Pcaprub net (#{dev}): #{net[0]} #{[net[1]].pack("N").unpack("H*")[0]}"
   end
 
