@@ -114,6 +114,7 @@ Gem::Tasks.new
 # Override standard release task
 require 'git'
 Rake::Task["release"].clear
+desc 'Release the gem (create tag, build, publish)'
 task :release do
   version = "#{PCAPRUB::VERSION::STRING}"
   remote = 'origin'
