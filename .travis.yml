@@ -1,15 +1,16 @@
 language: ruby
 before_install:
  - sudo apt-get install libpcap-dev -qq
- - gem update bundler
 before_script:
  - travis_retry gem update bundler
 rvm:
-  - 2.0.0
-  - 2.1
-  - 2.2
-  - 2.3.0
+  - 2.4
+  - 2.5
+  - 2.6
   - ruby-head
+env:
+  rvmsudo_secure_path: 1
+cache: bundler
 matrix:
   allow_failures:
     - rvm: ruby-head

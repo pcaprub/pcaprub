@@ -71,7 +71,7 @@ class Pcap::UnitTest < Test::Unit::TestCase
     d = Pcap.lookupdev
     o = Pcap.open_live(d, 65535, true, 1)
     r = o.datalink
-    assert_equal(Fixnum, r.class)
+    assert_equal(Integer, r.class)
   end
 
   def test_pcap_snapshot
