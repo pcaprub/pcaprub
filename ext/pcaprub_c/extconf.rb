@@ -18,6 +18,10 @@ if /i386-mingw32/ =~ RUBY_PLATFORM || /x64-mingw32/ =~ RUBY_PLATFORM
   pcap_includedir = with_config("pcap-includedir", pcap_dir + "/include")
   pcap_libdir     = with_config("pcap-libdir", pcap_dir + "/lib")
   
+  if /x64-mingw32/ =~ RUBY_PLATFORM
+    pcap_libdir += "/x64"
+  end
+
   $CFLAGS  = "-DWIN32 -I#{pcap_includedir}"
   $CFLAGS += " -g" if with_config("debug")
   $LDFLAGS = "-L#{pcap_libdir}"
@@ -32,6 +36,10 @@ elsif /i386-mswin32/ =~ RUBY_PLATFORM || /x64-mswin32/ =~ RUBY_PLATFORM
   pcap_dir        = with_config("pcap-dir", "C:\\WpdPack")
   pcap_includedir = with_config("pcap-includedir", pcap_dir + "\\include")
   pcap_libdir     = with_config("pcap-libdir", pcap_dir + "\\lib")
+
+  if /x64-mingw32/ =~ RUBY_PLATFORM
+    pcap_libdir += "\\x64"
+  end
 
   $CFLAGS  = "-DWIN32 -I#{pcap_includedir}"
   $CFLAGS += " -g" if with_config("debug")
