@@ -10,14 +10,14 @@ install:
   - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
   - ruby --version
   - gem --version
-  - gem install bundler --quiet --no-ri --no-rdoc
+  - gem install bundler --quiet
   - bundler --version
   - bundle install
   - cinst 7zip.commandline
   - cinst winpcap
-  - appveyor DownloadFile http://www.winpcap.org/install/bin/WpdPack_4_1_2.zip
+  - appveyor DownloadFile http://www.winpcap.org/install/bin/WpdPack_%wpdpack%.zip
   - dir
-  - 7za x .\WpdPack_4_1_2.zip -oc:\
+  - 7za x .\WpdPack_%wpdpack%.zip -oc:\
 build_script:
   - rake gem
 test_script:
@@ -27,13 +27,15 @@ artifacts:
 
 # https://www.appveyor.com/docs/installed-software#ruby
 environment:
+  wpdpack: 4_1_2
   matrix:
-    - ruby_version: "193"
-    - ruby_version: "200"
-    # - ruby_version: "200-x64" (Winpcap.h is not linking under 64bit ruby builds)
-    - ruby_version: "21"
-    # - ruby_version: "21-x64"
-    - ruby_version: "22"
+    - ruby_version: "24-x64"
+    - ruby_version: "24"
+    - ruby_version: "25-x64"
+    - ruby_version: "25"
+    - ruby_version: "26-x64"
+    - ruby_version: "26"
+
 
 cache:
   - C:\Users\appveyor\AppData\Local\Temp\chocolatey
