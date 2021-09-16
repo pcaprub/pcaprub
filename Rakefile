@@ -18,7 +18,7 @@ ENV['LANG'] = "en_US.UTF-8"
   spec.homepage              = "https://github.com/pcaprub/pcaprub"
   spec.requirements          = "libpcap"
   spec.license               = "LGPL-2.1"
-  spec.required_ruby_version = '~> 2.0'
+  spec.required_ruby_version = '>= 2.0'
 
   spec.files = [
     ".document",
