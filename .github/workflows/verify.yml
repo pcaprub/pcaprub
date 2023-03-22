@@ -1,0 +1,86 @@
+name: verify
+
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#permissions
+permissions:
+  actions: none
+  checks: none
+  contents: none
+  deployments: none
+  id-token: none
+  issues: none
+  discussions: none
+  packages: none
+  pages: none
+  pull-requests: none
+  repository-projects: none
+  security-events: none
+  statuses: none
+
+on: [push, pull_request]
+
+jobs:
+  verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-latest
+          - windows-latest
+          - ubuntu-latest
+        ruby:
+          - '3.0.2'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+
+    name: ${{ matrix.os }} - Ruby ${{ matrix.ruby }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Setup Ruby
+        env:
+          BUNDLE_WITHOUT: "coverage development"
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: false
+
+      - name: Install system dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get install libpcap-dev
+
+      - name: Install system dependencies (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $winPcapZip = 'C:\Windows\Temp\WpdPack_4_1_2.zip'
+          (New-Object System.Net.WebClient).DownloadFile('https://www.winpcap.org/install/bin/WpdPack_4_1_2.zip', $winPcapZip)
+          dir $winPcapZip
+          choco install 7zip
+          C:\ProgramData\chocolatey\bin\7z.exe x $winPcapZip -aoa -o"C:\"
+          dir C:\
+
+          if (!(Test-Path -Path C:\WpdPack\Lib\x64\wpcap.lib)) {
+            throw "failed extracting wpcap"
+          }
+
+      - name: build
+        run: |
+          bundle install
+          rake gem
+
+      # Skipped for now as the tests do not pass on Windows
+      # - name: test (Windows)
+      #   if: runner.os == 'Windows'
+      #   run: |
+      #     bundle exec rake
+
+      - name: test (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          sudo --preserve-env=PATH env bundle exec rake

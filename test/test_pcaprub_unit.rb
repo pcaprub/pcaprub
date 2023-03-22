@@ -122,7 +122,7 @@ class Pcap::UnitTest < Test::Unit::TestCase
 
   def test_set_datalink
     d = Pcap.lookupdev
-    o = Pcap.open_live(d, 65535, true, -1)
+    o = Pcap.open_live(d, 65535, true, 1)
     dls = o.listdatalinks
     begin
       assert_equal(o,o.setdatalink(dls.values.first))
