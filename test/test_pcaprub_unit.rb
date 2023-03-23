@@ -133,7 +133,7 @@ class Pcap::UnitTest < Test::Unit::TestCase
   end
 
   def test_monitor
-    return if RUBY_PLATFORM =~ /mingw|win/
+    return if RUBY_PLATFORM =~ /mingw/
     d = Pcap.lookupdev
     o = Pcap.create(d)
     assert_equal(o, o.setmonitor(true))
@@ -164,7 +164,11 @@ class Pcap::UnitTest < Test::Unit::TestCase
 
   def test_lib_version
     v = Pcap.lib_version.split
-    assert_equal "libpcap", v[0]
+    if RUBY_PLATFORM =~ /mingw/
+      assert_equal "WinPcap", v[0]
+    else
+      assert_equal "libpcap", v[0]
+    end
     assert_equal "version", v[1]
     assert_equal 3, v[2].split('.').size
   end

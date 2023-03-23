@@ -22,7 +22,6 @@ ENV['LANG'] = "en_US.UTF-8"
 
   spec.files = [
     ".document",
-    ".travis.yml",
     "FAQ.rdoc",
     "Gemfile",
     "LICENSE",
