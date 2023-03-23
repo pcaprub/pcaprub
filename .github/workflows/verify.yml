@@ -58,27 +58,19 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $winPcapZip = 'C:\Windows\Temp\WpdPack_4_1_2.zip'
-          (New-Object System.Net.WebClient).DownloadFile('https://www.winpcap.org/install/bin/WpdPack_4_1_2.zip', $winPcapZip)
-          dir $winPcapZip
-          choco install 7zip
-          C:\ProgramData\chocolatey\bin\7z.exe x $winPcapZip -aoa -o"C:\"
-          dir C:\
-
-          if (!(Test-Path -Path C:\WpdPack\Lib\x64\wpcap.lib)) {
-            throw "failed extracting wpcap"
-          }
+          $script = "$(Get-Location)\script\installwinpcap.ps1"
+          Write-Host $script
+          . $script
 
       - name: build
         run: |
           bundle install
           rake gem
 
-      # Skipped for now as the tests do not pass on Windows
-      # - name: test (Windows)
-      #   if: runner.os == 'Windows'
-      #   run: |
-      #     bundle exec rake
+      - name: test (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          bundle exec rake
 
       - name: test (Unix)
         if: runner.os != 'Windows'
