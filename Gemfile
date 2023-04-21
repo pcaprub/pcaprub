@@ -13,5 +13,5 @@ gem 'rubygems-tasks'
 
 if Bundler.current_ruby.mri? || Bundler.current_ruby.mingw? || Bundler.current_ruby.x64_mingw?
   gem 'rake', '>= 0.9.2'
-  gem 'git', '~> 1.11.0'
+  gem 'git', '~> 1.13.0'
 end
