@@ -81,7 +81,6 @@ rbpcap_s_lookupdev(VALUE self)
   char *dev = NULL;
   char eb[PCAP_ERRBUF_SIZE];
   VALUE ret_dev;  /* device string to return */
-#if defined(WIN32)  /* pcap_lookupdev is broken on windows */
   pcap_if_t *alldevs;
   pcap_if_t *d;
 
@@ -104,13 +103,6 @@ rbpcap_s_lookupdev(VALUE self)
   ret_dev = rb_str_new2(dev);
   /* We don't need any more the device list. Free it */
   pcap_freealldevs(alldevs);
-#else
-  dev = pcap_lookupdev(eb);
-  if (dev == NULL) {
-	rb_raise(eBindingError, "%s", eb);
- }
-  ret_dev = rb_str_new2(dev);
-#endif
   return ret_dev;
 }
 
