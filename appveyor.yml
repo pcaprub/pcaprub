@@ -5,13 +5,12 @@ branches:
     - master
 clone_depth: 10
 install:
+  - set PATH=C:\Ruby%RUBY_VERSION%\bin;%PATH%
   - ps: ((New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/bagder/ca-bundle/master/ca-bundle.crt', "$env:TMP\ca-bundle.crt"))
   - SET SSL_CERT_FILE=%TMP%\ca-bundle.crt
-  - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
   - ruby --version
   - gem --version
-  - gem install bundler --quiet
-  - bundler --version
+  - bundle --version
   - bundle install
   - cinst 7zip.commandline
   - cinst winpcap
@@ -29,13 +28,12 @@ artifacts:
 environment:
   wpdpack: 4_1_2
   matrix:
-    - ruby_version: "24-x64"
-    - ruby_version: "24"
-    - ruby_version: "25-x64"
-    - ruby_version: "25"
-    - ruby_version: "26-x64"
-    - ruby_version: "26"
-
+    - RUBY_VERSION: "24"
+    - RUBY_VERSION: "24-x64"
+    - RUBY_VERSION: "25"
+    - RUBY_VERSION: "25-x64"
+    - RUBY_VERSION: "26"
+    - RUBY_VERSION: "26-x64"
 
 cache:
   - C:\Users\appveyor\AppData\Local\Temp\chocolatey
