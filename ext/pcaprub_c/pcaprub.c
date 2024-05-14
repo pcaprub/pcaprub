@@ -981,7 +981,7 @@ rbpcap_each_data(VALUE self)
   if(! rbpcap_ready(rbp)) return self;
 
 #if defined(WIN32)
-  fno = (int)pcap_getevent(rbp->pd);
+  fno = (HANDLE)pcap_getevent(rbp->pd);
 #else
   fno = pcap_get_selectable_fd(rbp->pd);
 #endif
@@ -1023,7 +1023,7 @@ rbpcap_each_packet(VALUE self)
   if(! rbpcap_ready(rbp)) return self;
 
 #if defined(WIN32)
-  fno = (int)pcap_getevent(rbp->pd);
+  fno = (HANDLE)pcap_getevent(rbp->pd);
 #else
   fno = pcap_get_selectable_fd(rbp->pd);
 #endif
@@ -1241,12 +1241,12 @@ rbpacket_data(VALUE self)
 }
 
 #if defined(WIN32)
-static VALUE
+static void *
 rbpcap_thread_wait_handle_blocking(void *data)
 {
   VALUE result;
   result = (VALUE)WaitForSingleObject(data, 100);
-  return result;
+  return (void *) result;
 }
 
 /*
