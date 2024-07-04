@@ -165,7 +165,9 @@ class Pcap::UnitTest < Test::Unit::TestCase
   def test_lib_version
     v = Pcap.lib_version.split
     if RUBY_PLATFORM =~ /mingw/
-      assert_equal "WinPcap", v[0]
+      winpcap = 'WinPcap' == v[0]
+      npcap = 'npcap' == v[0]
+      assert winpcap || npcap
     else
       assert_equal "libpcap", v[0]
     end

@@ -9,8 +9,11 @@
 #endif
 
 #include <pcap.h>
+// Win32-Extensions only exist in winpcap not npcap
 #if defined(WIN32)
-#include <Win32-Extensions.h>
+  #ifdef HAVE_WIN32_EXTENSIONS_H
+    #include <Win32-Extensions.h>
+  #endif
 #endif
 
 #if !defined(WIN32)
@@ -407,7 +410,7 @@ rbpcap_setfilter(VALUE self, VALUE filter)
 {
   char eb[PCAP_ERRBUF_SIZE];
   rbpcap_t *rbp;
-  u_int32_t mask = 0, netid = 0;
+  uint32_t mask = 0, netid = 0;
   struct bpf_program bpf;
 
   Data_Get_Struct(self, rbpcap_t, rbp);
@@ -452,7 +455,7 @@ rbpcap_setfilter(VALUE self, VALUE filter)
 static VALUE
 rbpcap_compile(VALUE self, VALUE filter) {
   struct bpf_program bpf;
-  u_int32_t mask = 0;
+  uint32_t mask = 0;
   rbpcap_t *rbp;
 
   Data_Get_Struct(self, rbpcap_t, rbp);
