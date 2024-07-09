@@ -19,19 +19,66 @@ permissions:
 on: [push, pull_request]
 
 jobs:
-  verify:
+  verify-windows:
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - macos-latest
-          - windows-latest
-          - ubuntu-latest
-        ruby:
-          - '3.0'
-          - '3.1'
-          - '3.2'
-          - '3.3'
+        os: [windows-latest]
+        pcap: [winpcap, npcap]
+        ruby: ['3.0', '3.1', '3.2', '3.3']
+
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+
+    name: ${{ matrix.os }} - Ruby ${{ matrix.ruby }} - ${{ matrix.pcap }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Setup Ruby
+        env:
+          BUNDLE_WITHOUT: "coverage development"
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: false
+
+      - name: Install system dependencies (Windows - winpcap)
+        if: matrix.pcap == 'winpcap'
+        shell: pwsh
+        run: |
+          $script = "$(Get-Location)\script\installwinpcap.ps1"
+          Write-Host $script
+          . $script
+
+      - name: Install system dependencies (Windows - npcap)
+        if: matrix.pcap == 'npcap'
+        shell: pwsh
+        run: |
+          $script = "$(Get-Location)\script\installnpcap.ps1"
+          Write-Host $script
+          . $script
+
+      - name: build
+        run: |
+          bundle install
+          rake gem
+
+      - name: test
+        run: |
+          bundle exec rake
+
+  verify-unix:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+        ruby: ['3.0', '3.1', '3.2', '3.3']
+
     runs-on: ${{ matrix.os }}
     timeout-minutes: 25
 
@@ -57,25 +104,11 @@ jobs:
         run: |
           sudo apt-get install libpcap-dev
 
-      - name: Install system dependencies (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          $script = "$(Get-Location)\script\installwinpcap.ps1"
-          Write-Host $script
-          . $script
-
       - name: build
         run: |
           bundle install
           rake gem
 
-      - name: test (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          bundle exec rake
-
-      - name: test (Unix)
-        if: runner.os != 'Windows'
+      - name: test
         run: |
           sudo --preserve-env=PATH env bundle exec rake

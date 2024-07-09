@@ -3,10 +3,10 @@ extension_name = 'pcaprub_c'
 
 puts "\n[*] Running checks for #{extension_name} code..."
 puts("platform is #{RUBY_PLATFORM}")
-npcap_sdk = 'C:/npcap-sdk'
-winpcap_sdk = 'C:/WpdPack'
+default_npcap_sdk = 'C:/npcap-sdk'
+default_winpcap_sdk = 'C:/WpdPack'
 # Default to npcap if it exists, otherwise fallback to winpcap
-pcap_sdk = File.directory?(npcap_sdk) ? npcap_sdk : winpcap_sdk
+default_pcap_sdk = File.directory?(default_npcap_sdk) ? default_npcap_sdk : default_winpcap_sdk
 
 if /i386-mingw32/ =~ RUBY_PLATFORM || /x64-mingw32/ =~ RUBY_PLATFORM || /x64-mingw-ucrt/ =~ RUBY_PLATFORM
   unless  have_library("ws2_32" ) and
@@ -18,7 +18,7 @@ if /i386-mingw32/ =~ RUBY_PLATFORM || /x64-mingw32/ =~ RUBY_PLATFORM || /x64-min
     exit
   end
 
-  pcap_dir        = with_config("pcap-dir", pcap_sdk)
+  pcap_dir        = with_config("pcap-dir", default_pcap_sdk)
   pcap_includedir = with_config("pcap-includedir", pcap_dir + "/include")
   pcap_libdir     = with_config("pcap-libdir", pcap_dir + "/lib")
 
@@ -40,7 +40,7 @@ if /i386-mingw32/ =~ RUBY_PLATFORM || /x64-mingw32/ =~ RUBY_PLATFORM || /x64-min
   have_library("wpcap", "pcap_open_live")
   have_library("wpcap", "pcap_setnonblock")
 elsif /i386-mswin32/ =~ RUBY_PLATFORM || /x64-mswin32/ =~ RUBY_PLATFORM
-  pcap_dir        = with_config("pcap-dir", pcap_sdk)
+  pcap_dir        = with_config("pcap-dir", default_pcap_sdk)
   pcap_includedir = with_config("pcap-includedir", pcap_dir + "\\include")
   pcap_libdir     = with_config("pcap-libdir", pcap_dir + "\\lib")
 
