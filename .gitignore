@@ -25,4 +25,3 @@ tmp
 lib/pcaprub.bundle
 *.so
 *.lock
-*.gemspec
