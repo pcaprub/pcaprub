@@ -1,6 +1,5 @@
 #require "bundler/gem_tasks"
 require './lib/pcaprub/version.rb'
-require 'file'
 
 def java?
   /java/ === RUBY_PLATFORM
