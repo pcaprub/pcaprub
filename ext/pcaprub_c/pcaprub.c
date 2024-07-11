@@ -410,7 +410,7 @@ rbpcap_setfilter(VALUE self, VALUE filter)
 {
   char eb[PCAP_ERRBUF_SIZE];
   rbpcap_t *rbp;
-  uint32_t mask = 0, netid = 0;
+  bpf_u_int32 mask = 0, netid = 0;
   struct bpf_program bpf;
 
   Data_Get_Struct(self, rbpcap_t, rbp);
@@ -455,7 +455,7 @@ rbpcap_setfilter(VALUE self, VALUE filter)
 static VALUE
 rbpcap_compile(VALUE self, VALUE filter) {
   struct bpf_program bpf;
-  uint32_t mask = 0;
+  bpf_u_int32 mask = 0;
   rbpcap_t *rbp;
 
   Data_Get_Struct(self, rbpcap_t, rbp);
