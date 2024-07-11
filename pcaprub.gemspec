@@ -1,5 +1,6 @@
 #require "bundler/gem_tasks"
 require './lib/pcaprub/version.rb'
+require 'file'
 
 def java?
   /java/ === RUBY_PLATFORM
@@ -48,7 +49,7 @@ Gem::Specification.new do |spec|
     "USAGE.rdoc",
     "ext/pcaprub_c/pcaprub.c"
   ]
-  spec.extensions = FileList["ext/**/extconf.rb"]
+  spec.extensions = ["ext/pcaprub_c/extconf.rb"]
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
