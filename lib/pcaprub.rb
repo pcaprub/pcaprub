@@ -7,6 +7,7 @@ module PCAPRUB
     # On Windows load npcap first if it exists, will fall back to winpcap if that's installed
     npcap_path = "C:\\Windows\\System32\\Npcap"
     if File.directory?(npcap_path)
+      require 'ruby_installer'
       RubyInstaller::Runtime.add_dll_directory(npcap_path)
     end
   end
