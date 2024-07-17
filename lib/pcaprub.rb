@@ -3,15 +3,30 @@ module PCAPRUB
   require 'pcaprub/common'
   require 'pcaprub/version'
 
-  if RUBY_PLATFORM =~/(mswin|mingw)/i
-    # On Windows load npcap first if it exists, will fall back to winpcap if that's installed
-    npcap_path = "C:\\Windows\\System32\\Npcap"
-    if File.directory?(npcap_path)
-      RubyInstaller::Runtime.add_dll_directory(npcap_path)
+  add_dll_path = proc do |path, &block|
+    if RUBY_PLATFORM =~/(mswin|mingw)/i && path && File.exist?(path)
+      begin
+        require 'ruby_installer/runtime'
+        RubyInstaller::Runtime.add_dll_directory(path, &block)
+      rescue LoadError
+        old_path = ENV['PATH']
+        ENV['PATH'] = "#{path};#{old_path}"
+        begin
+          block.call
+        ensure
+          ENV['PATH'] = old_path
+        end
+      end
+    else
+      block.call
     end
   end
 
-  require 'pcaprub/ext'
+  npcap_path = "C:\\Windows\\System32\\Npcap"
+  add_dll_path.call(npcap_path) do
+    require 'pcaprub/ext'
+  end
+
 end
 
 #Force Include to allow backwards compatibility to ::PCAP.new
